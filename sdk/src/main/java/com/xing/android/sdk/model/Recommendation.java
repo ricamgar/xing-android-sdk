@@ -20,42 +20,35 @@
  * THE SOFTWARE.
  */
 
-package com.xing.android.sdk.json;
+package com.xing.android.sdk.model;
 
-import android.util.JsonReader;
+import com.squareup.moshi.Json;
+import com.xing.android.sdk.model.user.XingUser;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A String parser that just cycles through a JsonReader object and
- * reads every String that is inside.
- *
- * @author david.gonzalez
+ * @author daniel.hartwich
  */
-public final class StringMapper {
-    public static List<String> parseStringList(JsonReader reader) throws IOException {
-        List<String> stringList = new ArrayList<>(0);
-        reader.beginArray();
-        while (reader.hasNext()) {
-            stringList.add(reader.nextString());
-        }
-        reader.endArray();
-        return stringList;
+public class Recommendation {
+    @Json(name = "total")
+    private int total;
+    @Json(name = "recommendations")
+    private List<XingUser> recommendedUsers;
+
+    public int getTotal() {
+        return total;
     }
 
-    private StringMapper() {
-        throw new AssertionError("No instance.");
+    public void setTotal(int total) {
+        this.total = total;
     }
 
-    public static List<String> parseStringList(com.squareup.moshi.JsonReader reader) throws IOException {
-        List<String> stringList = new ArrayList<>(0);
-        reader.beginArray();
-        while (reader.hasNext()) {
-            stringList.add(reader.nextString());
-        }
-        reader.endArray();
-        return stringList;
+    public List<XingUser> getRecommendedUsers() {
+        return recommendedUsers;
+    }
+
+    public void setRecommendedUsers(List<XingUser> recommendedUsers) {
+        this.recommendedUsers = recommendedUsers;
     }
 }

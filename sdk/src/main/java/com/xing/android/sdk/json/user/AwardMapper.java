@@ -22,9 +22,8 @@
 
 package com.xing.android.sdk.json.user;
 
-import android.util.JsonReader;
-import android.util.JsonToken;
-
+import com.squareup.moshi.JsonReader;
+import com.squareup.moshi.JsonReader.Token;
 import com.xing.android.sdk.model.user.Award;
 
 import java.io.IOException;
@@ -50,7 +49,7 @@ public final class AwardMapper {
         while (reader.hasNext()) {
             switch (reader.nextName()) {
                 case "name": {
-                    if (reader.peek() == JsonToken.NULL) {
+                    if (reader.peek() == Token.NULL) {
                         reader.nextNull();
                     } else {
                         award.setName(reader.nextString());
@@ -58,7 +57,7 @@ public final class AwardMapper {
                     break;
                 }
                 case "url": {
-                    if (reader.peek() == JsonToken.NULL) {
+                    if (reader.peek() == Token.NULL) {
                         reader.nextNull();
                     } else {
                         award.setUrl(reader.nextString());
@@ -66,7 +65,7 @@ public final class AwardMapper {
                     break;
                 }
                 case "date_awarded": {
-                    if (reader.peek() == JsonToken.NULL) {
+                    if (reader.peek() == Token.NULL) {
                         reader.nextNull();
                     } else {
                         award.setDateAwarded(reader.nextInt());

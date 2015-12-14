@@ -25,8 +25,9 @@ package com.xing.android.sdk.json;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.JsonReader;
-import android.util.JsonToken;
+
+import com.squareup.moshi.JsonReader;
+import com.squareup.moshi.JsonReader.Token;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -103,7 +104,7 @@ public final class ParserUtils {
      * @throws IOException
      */
     public static boolean isNextTokenNull(JsonReader reader) throws IOException {
-        return reader.peek() == JsonToken.NULL;
+        return reader.peek() == Token.NULL;
     }
 
     private ParserUtils() {

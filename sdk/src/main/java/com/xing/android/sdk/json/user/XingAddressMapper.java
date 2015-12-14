@@ -26,6 +26,7 @@ import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
 
+import com.squareup.moshi.JsonReader.Token;
 import com.xing.android.sdk.model.user.XingAddress;
 import com.xing.android.sdk.model.user.XingPhone;
 
@@ -169,5 +170,105 @@ public final class XingAddressMapper {
 
     private XingAddressMapper() {
         throw new AssertionError("No instances.");
+    }
+
+    public static XingAddress parseXingAddress(com.squareup.moshi.JsonReader reader) throws IOException {
+        XingAddress xingaddress = new XingAddress();
+        reader.beginObject();
+        while (reader.hasNext()) {
+            switch (reader.nextName()) {
+                case "email": {
+                    if (reader.peek() == Token.NULL) {
+                        reader.nextNull();
+                    } else {
+                        xingaddress.setEmail(reader.nextString());
+                    }
+                    break;
+                }
+                case "city": {
+                    if (reader.peek() == Token.NULL) {
+                        reader.nextNull();
+                    } else {
+                        xingaddress.setCity(reader.nextString());
+                    }
+                    break;
+                }
+                case "country": {
+                    if (reader.peek() == Token.NULL) {
+                        reader.nextNull();
+                    } else {
+                        xingaddress.setCountry(reader.nextString());
+                    }
+                    break;
+                }
+                case "fax": {
+                    if (reader.peek() == Token.NULL) {
+                        reader.nextNull();
+                    } else {
+                        String rawFax = reader.nextString();
+                        try {
+                            xingaddress.setFax(rawFax);
+                        } catch (XingPhone.InvalidPhoneException e) {
+                            Log.d(TAG, rawFax + " is not a valid XING phone number");
+                        }
+                    }
+                    break;
+                }
+                case "mobile_phone": {
+                    if (reader.peek() == Token.NULL) {
+                        reader.nextNull();
+                    } else {
+                        final String rawMobilePhone = reader.nextString();
+                        try {
+                            xingaddress.setMobilePhone(rawMobilePhone);
+                        } catch (XingPhone.InvalidPhoneException e) {
+                            Log.d(TAG, rawMobilePhone + " is not a valid XING phone number");
+                        }
+                    }
+                    break;
+                }
+                case "phone": {
+                    if (reader.peek() == Token.NULL) {
+                        reader.nextNull();
+                    } else {
+                        final String rawPhone = reader.nextString();
+                        try {
+                            xingaddress.setPhone(rawPhone);
+                        } catch (XingPhone.InvalidPhoneException e) {
+                            Log.d(TAG, rawPhone + " is not a valid XING phone number");
+                        }
+                    }
+                    break;
+                }
+                case "province": {
+                    if (reader.peek() == Token.NULL) {
+                        reader.nextNull();
+                    } else {
+                        xingaddress.setProvince(reader.nextString());
+                    }
+                    break;
+                }
+                case "street": {
+                    if (reader.peek() == Token.NULL) {
+                        reader.nextNull();
+                    } else {
+                        xingaddress.setStreet(reader.nextString());
+                    }
+                    break;
+                }
+                case "zip_code": {
+                    if (reader.peek() == Token.NULL) {
+                        reader.nextNull();
+                    } else {
+                        xingaddress.setZipCode(reader.nextString());
+                    }
+                    break;
+                }
+                default:
+                    reader.skipValue();
+            }
+        }
+        reader.endObject();
+        return xingaddress;
     }
 }

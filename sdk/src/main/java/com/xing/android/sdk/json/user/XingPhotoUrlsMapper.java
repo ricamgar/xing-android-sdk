@@ -25,6 +25,7 @@ package com.xing.android.sdk.json.user;
 import android.util.JsonReader;
 import android.util.JsonToken;
 
+import com.squareup.moshi.JsonReader.Token;
 import com.xing.android.sdk.model.user.XingPhotoUrls;
 
 import java.io.IOException;
@@ -192,4 +193,139 @@ public final class XingPhotoUrlsMapper {
     private XingPhotoUrlsMapper() {
         throw new AssertionError("No instances.");
     }
+
+    public static List<XingPhotoUrls> parseXingPhotoUrlsList(com.squareup.moshi.JsonReader reader) throws IOException {
+        List<XingPhotoUrls> xingPhotoUrlsList = new ArrayList<>(0);
+        reader.beginArray();
+        while (reader.hasNext()) {
+            xingPhotoUrlsList.add(parseXingPhotoUrls(reader));
+        }
+        reader.endArray();
+        return xingPhotoUrlsList;
+    }
+
+    public static XingPhotoUrls parseXingPhotoUrls(com.squareup.moshi.JsonReader reader) throws IOException {
+    XingPhotoUrls xingphotourls = new XingPhotoUrls();
+    reader.beginObject();
+    while (reader.hasNext()) {
+        switch (reader.nextName()) {
+            case "large": {
+                if (reader.peek() == Token.NULL) {
+                    reader.nextNull();
+                } else {
+                    xingphotourls.setPhotoLargeUrl(reader.nextString());
+                }
+                break;
+            }
+            case "maxi_thumb": {
+                if (reader.peek() == Token.NULL) {
+                    reader.nextNull();
+                } else {
+                    xingphotourls.setPhotoMaxiThumbUrl(reader.nextString());
+                }
+                break;
+            }
+            case "medium_thumb": {
+                if (reader.peek() == Token.NULL) {
+                    reader.nextNull();
+                } else {
+                    xingphotourls.setPhotoMediumThumbUrl(reader.nextString());
+                }
+                break;
+            }
+            case "mini_thumb": {
+                if (reader.peek() == Token.NULL) {
+                    reader.nextNull();
+                } else {
+                    xingphotourls.setPhotoMiniThumbUrl(reader.nextString());
+                }
+                break;
+            }
+            case "thumb": {
+                if (reader.peek() == Token.NULL) {
+                    reader.nextNull();
+                } else {
+                    xingphotourls.setPhotoThumbUrl(reader.nextString());
+                }
+                break;
+            }
+            case "size_32x32": {
+                if (reader.peek() == Token.NULL) {
+                    reader.nextNull();
+                } else {
+                    xingphotourls.setPhotoSize32Url(reader.nextString());
+                }
+                break;
+            }
+            case "size_48x48": {
+                if (reader.peek() == Token.NULL) {
+                    reader.nextNull();
+                } else {
+                    xingphotourls.setPhotoSize48Url(reader.nextString());
+                }
+                break;
+            }
+            case "size_64x64": {
+                if (reader.peek() == Token.NULL) {
+                    reader.nextNull();
+                } else {
+                    xingphotourls.setPhotoSize64Url(reader.nextString());
+                }
+                break;
+            }
+            case "size_96x96": {
+                if (reader.peek() == Token.NULL) {
+                    reader.nextNull();
+                } else {
+                    xingphotourls.setPhotoSize96Url(reader.nextString());
+                }
+                break;
+            }
+            case "size_128x128": {
+                if (reader.peek() == Token.NULL) {
+                    reader.nextNull();
+                } else {
+                    xingphotourls.setPhotoSize128Url(reader.nextString());
+                }
+                break;
+            }
+            case "size_192x192": {
+                if (reader.peek() == Token.NULL) {
+                    reader.nextNull();
+                } else {
+                    xingphotourls.setPhotoSize192Url(reader.nextString());
+                }
+                break;
+            }
+            case "size_256x256": {
+                if (reader.peek() == Token.NULL) {
+                    reader.nextNull();
+                } else {
+                    xingphotourls.setPhotoSize256Url(reader.nextString());
+                }
+                break;
+            }
+            case "size_1024x1024": {
+                if (reader.peek() == Token.NULL) {
+                    reader.nextNull();
+                } else {
+                    xingphotourls.setPhotoSize1024Url(reader.nextString());
+                }
+                break;
+            }
+            case "size_original": {
+                if (reader.peek() == Token.NULL) {
+                    reader.nextNull();
+                } else {
+                    xingphotourls.setPhotoSizeOriginalUrl(reader.nextString());
+                }
+                break;
+            }
+            default:
+                reader.skipValue();
+        }
+    }
+    reader.endObject();
+    return xingphotourls;
+}
 }

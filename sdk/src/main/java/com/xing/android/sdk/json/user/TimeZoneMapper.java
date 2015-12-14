@@ -22,9 +22,8 @@
 
 package com.xing.android.sdk.json.user;
 
-import android.util.JsonReader;
-import android.util.JsonToken;
-
+import com.squareup.moshi.JsonReader;
+import com.squareup.moshi.JsonReader.Token;
 import com.xing.android.sdk.model.user.TimeZone;
 
 import java.io.IOException;
@@ -52,7 +51,7 @@ public final class TimeZoneMapper {
         while (reader.hasNext()) {
             switch (reader.nextName()) {
                 case "name": {
-                    if (reader.peek() == JsonToken.NULL) {
+                    if (reader.peek() == Token.NULL) {
                         reader.nextNull();
                     } else {
                         timezone.setName(reader.nextString());
@@ -60,7 +59,7 @@ public final class TimeZoneMapper {
                     break;
                 }
                 case "utc_offset": {
-                    if (reader.peek() == JsonToken.NULL) {
+                    if (reader.peek() == Token.NULL) {
                         reader.nextNull();
                     } else {
                         timezone.setUtcOffset((float) reader.nextDouble());

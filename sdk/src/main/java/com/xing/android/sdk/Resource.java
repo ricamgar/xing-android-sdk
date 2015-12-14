@@ -37,7 +37,6 @@ public abstract class Resource {
         this.api = api;
     }
 
-    // TODO (DanielH) Implement all internal methods required for building specs.
     protected static <RT, ET> CallSpec.Builder<RT, ET> newGetSpec(XingApi api, String resourcePath) {
         return new CallSpec.Builder<>(api, HttpMethod.GET, resourcePath, false);
     }

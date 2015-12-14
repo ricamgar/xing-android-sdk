@@ -22,8 +22,11 @@
 
 package com.xing.android.sdk.resources;
 
+import com.xing.android.sdk.CallSpec;
 import com.xing.android.sdk.Resource;
 import com.xing.android.sdk.XingApi;
+import com.xing.android.sdk.model.Recommendation;
+import com.xing.android.sdk.model.user.XingUser;
 
 /**
  * @author daniel.hartwich
@@ -34,5 +37,59 @@ public class RecommendationsResource extends Resource {
      */
     protected RecommendationsResource(XingApi api) {
         super(api);
+    }
+
+    /**
+     * Get recommendations.
+     *
+     * Returns a list of users the specified user might know.
+     *
+     * <table>
+     * <h4>Possible OPTIONAL parameters</h4>
+     * <tr>
+     * <th>Paramter Name</th>
+     * <th><b>Description</b></th>
+     * </tr>
+     * <tr>
+     * <td><b>limit</b></td>
+     * <td>Limit the number of recommendations to be returned. This must be a positive number. Default: 10, Maximum:
+     * 100.</td>
+     * </tr>
+     * <tr>
+     * <td><b>offset</b></td>
+     * <td>Offset. This must be a positive number. Default: 0</td>
+     * </tr>
+     * <tr>
+     * <td><b>user_fields</b></td>
+     * <td>List of user attributes to return. If this parameter is not used, only the ID will be returned.
+     * For a list of available profile user attributes, please refer to the get user details call.
+     * {@link XingUser}</td>
+     * </tr>
+     * </table>
+     *
+     * @param userId ID of the user the recommendations are generated for.
+     */
+    public CallSpec<Recommendation, Object> getRecommendations(String userId) {
+        return Resource.<Recommendation, Object>newGetSpec(api, "/v1/users/{user_id}/network/recommendations")
+              .pathParam("user_id", userId)
+              .responseAs(Recommendation.class, "user_recommendations")
+              .build();
+    }
+
+    /**
+     * Block recommendations.
+     *
+     * Block recommendation for user with given id. This will block all future occurances of this recomendation for
+     * the given User ID.
+     *
+     * @param userId User ID
+     * @param id User ID which should not appear in further recommendations
+     */
+    public CallSpec<String, String> blockRecomendation(String userId, String id) {
+        return Resource.<String, String>newDeleteSpec(api, "/v1/users/{user_id}/network/recommendations/user/{id}")
+              .pathParam("user_id", userId)
+              .pathParam("id", id)
+              .responseAs(String.class)
+              .build();
     }
 }

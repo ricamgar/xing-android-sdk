@@ -20,42 +20,22 @@
  * THE SOFTWARE.
  */
 
-package com.xing.android.sdk.json;
+package com.xing.android.sdk.model;
 
-import android.util.JsonReader;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import com.squareup.moshi.Json;
 
 /**
- * A String parser that just cycles through a JsonReader object and
- * reads every String that is inside.
- *
- * @author david.gonzalez
+ * @author daniel.hartwich
  */
-public final class StringMapper {
-    public static List<String> parseStringList(JsonReader reader) throws IOException {
-        List<String> stringList = new ArrayList<>(0);
-        reader.beginArray();
-        while (reader.hasNext()) {
-            stringList.add(reader.nextString());
-        }
-        reader.endArray();
-        return stringList;
+public class Reason {
+    @Json(name = "text")
+    private String text;
+
+    public String getText() {
+        return text;
     }
 
-    private StringMapper() {
-        throw new AssertionError("No instance.");
-    }
-
-    public static List<String> parseStringList(com.squareup.moshi.JsonReader reader) throws IOException {
-        List<String> stringList = new ArrayList<>(0);
-        reader.beginArray();
-        while (reader.hasNext()) {
-            stringList.add(reader.nextString());
-        }
-        reader.endArray();
-        return stringList;
+    public void setText(String text) {
+        this.text = text;
     }
 }

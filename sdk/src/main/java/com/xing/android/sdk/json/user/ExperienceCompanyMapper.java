@@ -23,9 +23,9 @@
 package com.xing.android.sdk.json.user;
 
 import android.support.annotation.NonNull;
-import android.util.JsonReader;
-import android.util.JsonToken;
 
+import com.squareup.moshi.JsonReader;
+import com.squareup.moshi.JsonReader.Token;
 import com.xing.android.sdk.model.user.ExperienceCompany;
 
 import java.io.IOException;
@@ -53,7 +53,7 @@ public final class ExperienceCompanyMapper {
         while (reader.hasNext()) {
             switch (reader.nextName()) {
                 case "name": {
-                    if (reader.peek() == JsonToken.NULL) {
+                    if (reader.peek() == Token.NULL) {
                         reader.nextNull();
                     } else {
                         experienceCompany.setName(reader.nextString());
@@ -61,7 +61,7 @@ public final class ExperienceCompanyMapper {
                     break;
                 }
                 case "id": {
-                    if (reader.peek() == JsonToken.NULL) {
+                    if (reader.peek() == Token.NULL) {
                         reader.nextNull();
                     } else {
                         experienceCompany.setId(reader.nextString());
@@ -69,7 +69,7 @@ public final class ExperienceCompanyMapper {
                     break;
                 }
                 case "begin_date": {
-                    if (reader.peek() == JsonToken.NULL) {
+                    if (reader.peek() == Token.NULL) {
                         reader.nextNull();
                     } else {
                         experienceCompany.setBeginDate(reader.nextString());
@@ -77,7 +77,7 @@ public final class ExperienceCompanyMapper {
                     break;
                 }
                 case "career_level": {
-                    if (reader.peek() == JsonToken.NULL) {
+                    if (reader.peek() == Token.NULL) {
                         reader.nextNull();
                     } else {
                         experienceCompany.setCareerLevel(reader.nextString());
@@ -85,7 +85,7 @@ public final class ExperienceCompanyMapper {
                     break;
                 }
                 case "company_size": {
-                    if (reader.peek() == JsonToken.NULL) {
+                    if (reader.peek() == Token.NULL) {
                         reader.nextNull();
                     } else {
                         experienceCompany.setCompanySize(reader.nextString());
@@ -93,7 +93,7 @@ public final class ExperienceCompanyMapper {
                     break;
                 }
                 case "description": {
-                    if (reader.peek() == JsonToken.NULL) {
+                    if (reader.peek() == Token.NULL) {
                         reader.nextNull();
                     } else {
                         experienceCompany.setDescription(reader.nextString());
@@ -101,7 +101,7 @@ public final class ExperienceCompanyMapper {
                     break;
                 }
                 case "end_date": {
-                    if (reader.peek() == JsonToken.NULL) {
+                    if (reader.peek() == Token.NULL) {
                         reader.nextNull();
                     } else {
                         experienceCompany.setEndDate(reader.nextString());
@@ -109,7 +109,7 @@ public final class ExperienceCompanyMapper {
                     break;
                 }
                 case "form_of_employment": {
-                    if (reader.peek() == JsonToken.NULL) {
+                    if (reader.peek() == Token.NULL) {
                         reader.nextNull();
                     } else {
                         experienceCompany.setFormOfEmployment(reader.nextString());
@@ -117,7 +117,7 @@ public final class ExperienceCompanyMapper {
                     break;
                 }
                 case "industries": {
-                    if (reader.peek() == JsonToken.NULL) {
+                    if (reader.peek() == Token.NULL) {
                         reader.nextNull();
                     } else {
                         parseIndustry(reader, experienceCompany);
@@ -125,7 +125,7 @@ public final class ExperienceCompanyMapper {
                     break;
                 }
                 case "title": {
-                    if (reader.peek() == JsonToken.NULL) {
+                    if (reader.peek() == Token.NULL) {
                         reader.nextNull();
                     } else {
                         experienceCompany.setTitle(reader.nextString());
@@ -133,7 +133,7 @@ public final class ExperienceCompanyMapper {
                     break;
                 }
                 case "until_now": {
-                    if (reader.peek() == JsonToken.NULL) {
+                    if (reader.peek() == Token.NULL) {
                         reader.nextNull();
                     } else {
                         experienceCompany.setUntilNow(reader.nextBoolean());
@@ -141,7 +141,7 @@ public final class ExperienceCompanyMapper {
                     break;
                 }
                 case "url": {
-                    if (reader.peek() == JsonToken.NULL) {
+                    if (reader.peek() == Token.NULL) {
                         reader.nextNull();
                     } else {
                         //noinspection ConstantConditions
@@ -150,7 +150,7 @@ public final class ExperienceCompanyMapper {
                     break;
                 }
                 case "tag": {
-                    if (reader.peek() == JsonToken.NULL) {
+                    if (reader.peek() == Token.NULL) {
                         reader.nextNull();
                     } else {
                         experienceCompany.setTag(reader.nextString());
@@ -169,7 +169,7 @@ public final class ExperienceCompanyMapper {
             IOException {
         reader.beginArray();
 
-        if (reader.peek() == JsonToken.BEGIN_OBJECT) {
+        if (reader.peek() == Token.BEGIN_OBJECT) {
             int industryId;
             String industryType;
 

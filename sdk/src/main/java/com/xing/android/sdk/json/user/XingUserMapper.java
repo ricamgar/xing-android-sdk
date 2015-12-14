@@ -22,11 +22,10 @@
 
 package com.xing.android.sdk.json.user;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.JsonReader;
 
+import com.squareup.moshi.JsonReader;
+import com.squareup.moshi.JsonReader.Token;
 import com.xing.android.sdk.json.EnumMapper;
 import com.xing.android.sdk.json.StringMapper;
 import com.xing.android.sdk.model.XingCalendar;
@@ -37,12 +36,10 @@ import com.xing.android.sdk.model.user.WebProfile;
 import com.xing.android.sdk.model.user.XingUser;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static com.xing.android.sdk.json.ParserUtils.isNextTokenNull;
 import static com.xing.android.sdk.json.ParserUtils.parseArrayOfStringsToSet;
 
 /**
@@ -52,224 +49,6 @@ import static com.xing.android.sdk.json.ParserUtils.parseArrayOfStringsToSet;
  * @author daniel.hartwich
  */
 public final class XingUserMapper {
-    /**
-     * Parse a list of {@link XingUser} objects that was returned by the request.
-     * For more information see {@link com.xing.android.sdk.network.request.UserProfilesRequests#details(List, List)}.
-     *
-     * @param response The JSON String containing the information about Users
-     * @return A list of XingUser objects
-     *
-     * @throws IOException
-     */
-    @Nullable
-    public static List<XingUser> parseDetailsResponse(String response) throws IOException {
-        List<XingUser> users = null;
-        JsonReader reader = new JsonReader(new StringReader(response));
-        reader.beginObject();
-        while (reader.hasNext()) {
-            switch (reader.nextName()) {
-                case "users": {
-                    users = parseXingUserList(reader);
-                }
-            }
-        }
-        reader.endObject();
-        return users;
-    }
-
-    /**
-     * Parse a {@link XingUser} object that was returned by the request.
-     * For more information see {@link com.xing.android.sdk.network.request.UserProfilesRequests#details(List, List)}.
-     *
-     * @param response The JSON String containing the single user information
-     * @return A XingUser object
-     *
-     * @throws IOException
-     */
-    @Nullable
-    public static XingUser parseDetailsResponseSingleUser(String response) throws IOException {
-        XingUser user = null;
-        JsonReader reader = new JsonReader(new StringReader(response));
-        reader.beginObject();
-        while (reader.hasNext()) {
-            switch (reader.nextName()) {
-                case "users": {
-                    user = parseXingUserList(reader).get(0);
-                }
-            }
-        }
-        reader.endObject();
-        return user;
-    }
-
-    /**
-     * Parse the details for the {@link XingUser} object.
-     *
-     * @param reader The json reader
-     * @return A XingUser object filled with all the information
-     *
-     * @throws IOException
-     */
-    public static XingUser parseXingUser(JsonReader reader) throws IOException {
-        XingUser xinguser = new XingUser();
-        reader.beginObject();
-        while (reader.hasNext()) {
-            String name = reader.nextName();
-            if (isNextTokenNull(reader)) {
-                reader.nextNull();
-            } else {
-                switch (name) {
-                    case "id": {
-                        xinguser.setId(reader.nextString());
-                        break;
-                    }
-                    case "first_name": {
-                        xinguser.setFirstName(reader.nextString());
-                        break;
-                    }
-                    case "last_name": {
-                        xinguser.setLastName(reader.nextString());
-                        break;
-                    }
-                    case "display_name": {
-                        xinguser.setDisplayName(reader.nextString());
-                        break;
-                    }
-                    case "gender": {
-                        xinguser.setGender(reader.nextString());
-                        break;
-                    }
-                    case "birth_date": {
-                        xinguser.setBirthday(parseBirthDate(reader));
-                        break;
-                    }
-                    case "page_name": {
-                        xinguser.setPageName(reader.nextString());
-                        break;
-                    }
-                    case "permalink": {
-                        xinguser.setPermalink(reader.nextString());
-                        break;
-                    }
-                    case "employment_status": {
-                        xinguser.setEmploymentStatus(reader.nextString());
-                        break;
-                    }
-                    case "active_email": {
-                        xinguser.setActiveEmail(reader.nextString());
-                        break;
-                    }
-                    case "premium_services": {
-                        xinguser.setPremiumServicesFromStringList(StringMapper.parseStringList(reader));
-                        break;
-                    }
-                    case "badges": {
-                        xinguser.setBadgesFromStringList(StringMapper.parseStringList(reader));
-                        break;
-                    }
-                    case "wants": {
-                        xinguser.setWants(reader.nextString());
-                        break;
-                    }
-                    case "haves": {
-                        xinguser.setHaves(reader.nextString());
-                        break;
-                    }
-                    case "interests": {
-                        xinguser.setInterests(reader.nextString());
-                        break;
-                    }
-                    case "organisation_member": {
-                        xinguser.setOrganisationMember(reader.nextString());
-                        break;
-                    }
-                    case "private_address": {
-                        xinguser.setPrivateAddress(XingAddressMapper.parseXingAddress(reader));
-                        break;
-                    }
-                    case "business_address": {
-                        xinguser.setBusinessAddress(XingAddressMapper.parseXingAddress(reader));
-                        break;
-                    }
-                    case "educational_background": {
-                        //                        xinguser.setEducationBackground(EducationalBackgroundMapper
-                        // .parseEducationalBackground(reader));
-                        break;
-                    }
-                    case "photo_urls": {
-                        xinguser.setPhotoUrls(XingPhotoUrlsMapper.parseXingPhotoUrls(reader));
-                        break;
-                    }
-                    case "professional_experience": {
-                        //                        xinguser.setProfessionalExperience(
-                        // ProfessionalExperienceMapper.parseProfessionalExperience(reader));
-                        break;
-                    }
-                    case "time_zone": {
-                        xinguser.setTimeZone(TimeZoneMapper.parseTimeZone(reader));
-                        break;
-                    }
-                    case "languages": {
-                        parseLanguages(reader, xinguser);
-                        break;
-                    }
-                    case "web_profiles": {
-                        parseWebProfiles(reader, xinguser);
-                        break;
-                    }
-                    case "instant_messaging_accounts": {
-                        parseMessagingAccounts(reader, xinguser);
-                        break;
-                    }
-                    default:
-                        reader.skipValue();
-                }
-            }
-        }
-        reader.endObject();
-        return xinguser;
-    }
-
-    @NonNull
-    private static XingCalendar parseBirthDate(JsonReader reader) throws IOException {
-        XingCalendar calendar = new XingCalendar();
-        calendar.clear();
-
-        reader.beginObject();
-        while (reader.hasNext()) {
-            switch (reader.nextName()) {
-                case "day": {
-                    if (isNextTokenNull(reader)) {
-                        reader.nextNull();
-                    } else {
-                        calendar.set(Calendar.DAY_OF_MONTH, reader.nextInt());
-                    }
-                }
-                break;
-                case "month": {
-                    if (isNextTokenNull(reader)) {
-                        reader.nextNull();
-                    } else {
-                        calendar.set(Calendar.MONTH, reader.nextInt() - 1);
-                    }
-                }
-                break;
-                case "year": {
-                    if (isNextTokenNull(reader)) {
-                        reader.nextNull();
-                    } else {
-                        calendar.set(Calendar.YEAR, reader.nextInt());
-                    }
-                }
-                break;
-                default: {
-                    reader.skipValue();
-                }
-            }
-        }
-        reader.endObject();
-        return calendar;
-    }
 
     private static void parseLanguages(JsonReader reader, XingUser xinguser) throws IOException {
         reader.beginObject();
@@ -362,5 +141,169 @@ public final class XingUserMapper {
 
     private XingUserMapper() {
         throw new AssertionError("No instances.");
+    }
+
+    public static XingUser parseXingUser(JsonReader reader) throws IOException {
+        XingUser xinguser = new XingUser();
+        reader.beginObject();
+        while (reader.hasNext()) {
+            String name = reader.nextName();
+            if (isNextTokenNull(reader)) {
+                reader.nextNull();
+            } else {
+                switch (name) {
+                    case "id": {
+                        xinguser.setId(reader.nextString());
+                        break;
+                    }
+                    case "first_name": {
+                        xinguser.setFirstName(reader.nextString());
+                        break;
+                    }
+                    case "last_name": {
+                        xinguser.setLastName(reader.nextString());
+                        break;
+                    }
+                    case "display_name": {
+                        xinguser.setDisplayName(reader.nextString());
+                        break;
+                    }
+                    case "gender": {
+                        xinguser.setGender(reader.nextString());
+                        break;
+                    }
+                    case "birth_date": {
+                        xinguser.setBirthday(parseBirthDate(reader));
+                        break;
+                    }
+                    case "page_name": {
+                        xinguser.setPageName(reader.nextString());
+                        break;
+                    }
+                    case "permalink": {
+                        xinguser.setPermalink(reader.nextString());
+                        break;
+                    }
+                    case "employment_status": {
+                        xinguser.setEmploymentStatus(reader.nextString());
+                        break;
+                    }
+                    case "active_email": {
+                        xinguser.setActiveEmail(reader.nextString());
+                        break;
+                    }
+                    case "premium_services": {
+                        xinguser.setPremiumServicesFromStringList(StringMapper.parseStringList(reader));
+                        break;
+                    }
+                    case "badges": {
+                        xinguser.setBadgesFromStringList(StringMapper.parseStringList(reader));
+                        break;
+                    }
+                    case "wants": {
+                        xinguser.setWants(reader.nextString());
+                        break;
+                    }
+                    case "haves": {
+                        xinguser.setHaves(reader.nextString());
+                        break;
+                    }
+                    case "interests": {
+                        xinguser.setInterests(reader.nextString());
+                        break;
+                    }
+                    case "organisation_member": {
+                        xinguser.setOrganisationMember(reader.nextString());
+                        break;
+                    }
+                    case "private_address": {
+                        xinguser.setPrivateAddress(XingAddressMapper.parseXingAddress(reader));
+                        break;
+                    }
+                    case "business_address": {
+                        xinguser.setBusinessAddress(XingAddressMapper.parseXingAddress(reader));
+                        break;
+                    }
+                    case "educational_background": {
+                        //                        xinguser.setEducationBackground(EducationalBackgroundMapper
+                        // .parseEducationalBackground(reader));
+                        break;
+                    }
+                    case "photo_urls": {
+                        xinguser.setPhotoUrls(XingPhotoUrlsMapper.parseXingPhotoUrls(reader));
+                        break;
+                    }
+                    case "professional_experience": {
+                        xinguser.setProfessionalExperience(
+                              ProfessionalExperienceMapper.parseProfessionalExperience(reader));
+                        break;
+                    }
+                    case "time_zone": {
+                        xinguser.setTimeZone(TimeZoneMapper.parseTimeZone(reader));
+                        break;
+                    }
+                    case "languages": {
+                        parseLanguages(reader, xinguser);
+                        break;
+                    }
+                    case "web_profiles": {
+                        parseWebProfiles(reader, xinguser);
+                        break;
+                    }
+                    case "instant_messaging_accounts": {
+                        //                        parseMessagingAccounts(reader, xinguser);
+                        break;
+                    }
+                    default:
+                        reader.skipValue();
+                }
+            }
+        }
+        reader.endObject();
+        return xinguser;
+    }
+
+    private static XingCalendar parseBirthDate(JsonReader reader) throws IOException {
+        XingCalendar calendar = new XingCalendar();
+        calendar.clear();
+
+        reader.beginObject();
+        while (reader.hasNext()) {
+            switch (reader.nextName()) {
+                case "day": {
+                    if (isNextTokenNull(reader)) {
+                        reader.nextNull();
+                    } else {
+                        calendar.set(Calendar.DAY_OF_MONTH, reader.nextInt());
+                    }
+                }
+                break;
+                case "month": {
+                    if (isNextTokenNull(reader)) {
+                        reader.nextNull();
+                    } else {
+                        calendar.set(Calendar.MONTH, reader.nextInt() - 1);
+                    }
+                }
+                break;
+                case "year": {
+                    if (isNextTokenNull(reader)) {
+                        reader.nextNull();
+                    } else {
+                        calendar.set(Calendar.YEAR, reader.nextInt());
+                    }
+                }
+                break;
+                default: {
+                    reader.skipValue();
+                }
+            }
+        }
+        reader.endObject();
+        return calendar;
+    }
+
+    private static boolean isNextTokenNull(JsonReader reader) throws IOException {
+        return reader.peek() == Token.NULL;
     }
 }

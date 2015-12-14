@@ -64,6 +64,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ProfileActivity" />
         </activity>
+        <activity android:name=".RecommendationActivity">
+        </activity>
     </application>
 
 </manifest>

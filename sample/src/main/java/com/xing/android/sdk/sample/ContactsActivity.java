@@ -40,7 +40,6 @@ import com.xing.android.sdk.sample.adapters.ContactsRecyclerAdapter;
 import com.xing.android.sdk.sample.utils.EndlessRecyclerOnScrollListener;
 import com.xing.android.sdk.sample.utils.RecyclerItemClickListener;
 import com.xing.android.sdk.task.OnTaskFinishedListener;
-import com.xing.android.sdk.task.contact.ContactsTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +53,6 @@ public class ContactsActivity extends BaseActivity implements OnTaskFinishedList
     private static final String SORT_LAST_NAME = "last_name";
 
     private ContactsRecyclerAdapter adapter;
-    private ContactsTask mContactsTask;
     private XingController mXingController;
     //Boolean to see if the load more functionality should be triggered
     private boolean shouldLoadMore = true;
@@ -81,13 +79,6 @@ public class ContactsActivity extends BaseActivity implements OnTaskFinishedList
         contactUserFields.add(XingUserField.PHOTO_URLS);
         contactUserFields.add(XingUserField.PROFESSIONAL_EXPERIENCE);
         contactUserFields.add(XingUserField.EDUCATIONAL_BACKGROUND);
-
-        mContactsTask =
-                new ContactsTask(ME, null, CONTACT_BATCH_SIZE, null, SORT_LAST_NAME, contactUserFields, this, this);
-        mXingController = XingController.getInstance();
-
-        //Executing the ContactsTask with the parameters specified above
-        mXingController.executeAsync(mContactsTask);
 
         //Initialize the RecyclerView
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.contacts_recycler);
@@ -143,7 +134,6 @@ public class ContactsActivity extends BaseActivity implements OnTaskFinishedList
 
     private void loadMore() {
         if (shouldLoadMore) {
-            mXingController.executeAsync(mContactsTask);
         }
     }
 

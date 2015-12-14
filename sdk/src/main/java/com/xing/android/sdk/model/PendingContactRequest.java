@@ -20,42 +20,32 @@
  * THE SOFTWARE.
  */
 
-package com.xing.android.sdk.json;
+package com.xing.android.sdk.model;
 
-import android.util.JsonReader;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import com.squareup.moshi.Json;
 
 /**
- * A String parser that just cycles through a JsonReader object and
- * reads every String that is inside.
- *
- * @author david.gonzalez
+ * @author daniel.hartwich
  */
-public final class StringMapper {
-    public static List<String> parseStringList(JsonReader reader) throws IOException {
-        List<String> stringList = new ArrayList<>(0);
-        reader.beginArray();
-        while (reader.hasNext()) {
-            stringList.add(reader.nextString());
-        }
-        reader.endArray();
-        return stringList;
+public class PendingContactRequest {
+    @Json(name = "sender_id")
+    private String senderId;
+    @Json(name = "recipient_id")
+    private String recipientId;
+
+    public String getSenderId() {
+        return senderId;
     }
 
-    private StringMapper() {
-        throw new AssertionError("No instance.");
+    public void setSenderId(String senderId) {
+        this.senderId = senderId;
     }
 
-    public static List<String> parseStringList(com.squareup.moshi.JsonReader reader) throws IOException {
-        List<String> stringList = new ArrayList<>(0);
-        reader.beginArray();
-        while (reader.hasNext()) {
-            stringList.add(reader.nextString());
-        }
-        reader.endArray();
-        return stringList;
+    public String getRecipientId() {
+        return recipientId;
+    }
+
+    public void setRecipientId(String recipientId) {
+        this.recipientId = recipientId;
     }
 }

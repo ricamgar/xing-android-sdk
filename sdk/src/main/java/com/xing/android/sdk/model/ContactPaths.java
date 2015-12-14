@@ -20,42 +20,51 @@
  * THE SOFTWARE.
  */
 
-package com.xing.android.sdk.json;
+package com.xing.android.sdk.model;
 
-import android.util.JsonReader;
+import com.squareup.moshi.Json;
+import com.xing.android.sdk.model.user.XingUser;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A String parser that just cycles through a JsonReader object and
- * reads every String that is inside.
- *
- * @author david.gonzalez
+ * @author daniel.hartwich
  */
-public final class StringMapper {
-    public static List<String> parseStringList(JsonReader reader) throws IOException {
-        List<String> stringList = new ArrayList<>(0);
-        reader.beginArray();
-        while (reader.hasNext()) {
-            stringList.add(reader.nextString());
-        }
-        reader.endArray();
-        return stringList;
+public class ContactPaths {
+    @Json(name = "paths")
+    private List<ContactPath> contactPaths;
+    @Json(name = "distance")
+    private int distance;
+    @Json(name = "total")
+    private int total;
+
+    public int getDistance() {
+        return distance;
     }
 
-    private StringMapper() {
-        throw new AssertionError("No instance.");
+    public void setDistance(int distance) {
+        this.distance = distance;
     }
 
-    public static List<String> parseStringList(com.squareup.moshi.JsonReader reader) throws IOException {
-        List<String> stringList = new ArrayList<>(0);
-        reader.beginArray();
-        while (reader.hasNext()) {
-            stringList.add(reader.nextString());
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    private static final class ContactPath {
+        @Json(name = "users")
+        private List<XingUser> userList;
+
+        public List<XingUser> getUserList() {
+            return userList;
         }
-        reader.endArray();
-        return stringList;
+
+        public void setUserList(List<XingUser> userList) {
+            this.userList = userList;
+        }
     }
 }
+

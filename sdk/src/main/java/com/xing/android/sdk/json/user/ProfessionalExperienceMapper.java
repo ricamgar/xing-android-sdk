@@ -22,9 +22,7 @@
 
 package com.xing.android.sdk.json.user;
 
-import android.util.JsonReader;
-import android.util.JsonToken;
-
+import com.squareup.moshi.JsonReader.Token;
 import com.xing.android.sdk.model.user.ProfessionalExperience;
 
 import java.io.IOException;
@@ -46,22 +44,92 @@ public final class ProfessionalExperienceMapper {
      *
      * @throws IOException
      */
-    public static ProfessionalExperience parseProfessionalExperience(JsonReader reader) throws IOException {
+//    public static ProfessionalExperience parseProfessionalExperience(JsonReader reader) throws IOException {
+//        ProfessionalExperience professionalexperience = new ProfessionalExperience();
+//        reader.beginObject();
+//        while (reader.hasNext()) {
+//            switch (reader.nextName()) {
+//                case "primary_company": {
+//                    if (reader.peek() == JsonToken.NULL) {
+//                        reader.nextNull();
+//                    } else {
+//                        professionalexperience.setPrimaryCompany(
+//                              ExperienceCompanyMapper.parseExperienceCompany(reader));
+//                    }
+//                    break;
+//                }
+//                case "companies": {
+//                    if (reader.peek() == JsonToken.NULL) {
+//                        reader.nextNull();
+//                    } else {
+//                        professionalexperience.setCompanies(ExperienceCompanyMapper.parseExperienceCompanyList(reader));
+//                    }
+//                    break;
+//                }
+//                case "awards": {
+//                    if (reader.peek() == JsonToken.NULL) {
+//                        reader.nextNull();
+//                    } else {
+//                        professionalexperience.setAwards(AwardMapper.parseAwardList(reader));
+//                    }
+//                    break;
+//                }
+//                default:
+//                    reader.skipValue();
+//            }
+//        }
+//        reader.endObject();
+//        return professionalexperience;
+//    }
+
+    /**
+     * Gets a list of Professional experiences.
+     *
+//     * @param reader A JsonTokenReader object that contains the education backgrounds
+     * @return A list of ProfessionalExperience objects
+     *
+     * @throws IOException
+     */
+//    public static List<ProfessionalExperience> parseProfessionalExperienceList(JsonReader reader) throws IOException {
+//        List<ProfessionalExperience> professionalExperienceList = new ArrayList<>(0);
+//        reader.beginArray();
+//        while (reader.hasNext()) {
+//            professionalExperienceList.add(parseProfessionalExperience(reader));
+//        }
+//        reader.endArray();
+//        return professionalExperienceList;
+//    }
+
+    private ProfessionalExperienceMapper() {
+        throw new AssertionError("No instances.");
+    }
+
+    public static List<ProfessionalExperience> parseProfessionalExperiences(com.squareup.moshi.JsonReader reader)
+    throws IOException {
+        List<ProfessionalExperience> professionalExperienceList = new ArrayList<>(0);
+        reader.beginArray();
+        while (reader.hasNext()) {
+            professionalExperienceList.add(parseProfessionalExperience(reader));
+        }
+        reader.endArray();
+        return professionalExperienceList;
+    }
+    public static ProfessionalExperience parseProfessionalExperience(com.squareup.moshi.JsonReader reader) throws IOException {
         ProfessionalExperience professionalexperience = new ProfessionalExperience();
         reader.beginObject();
         while (reader.hasNext()) {
             switch (reader.nextName()) {
                 case "primary_company": {
-                    if (reader.peek() == JsonToken.NULL) {
+                    if (reader.peek() == Token.NULL) {
                         reader.nextNull();
                     } else {
                         professionalexperience.setPrimaryCompany(
-                                ExperienceCompanyMapper.parseExperienceCompany(reader));
+                              ExperienceCompanyMapper.parseExperienceCompany(reader));
                     }
                     break;
                 }
                 case "companies": {
-                    if (reader.peek() == JsonToken.NULL) {
+                    if (reader.peek() == Token.NULL) {
                         reader.nextNull();
                     } else {
                         professionalexperience.setCompanies(ExperienceCompanyMapper.parseExperienceCompanyList(reader));
@@ -69,7 +137,7 @@ public final class ProfessionalExperienceMapper {
                     break;
                 }
                 case "awards": {
-                    if (reader.peek() == JsonToken.NULL) {
+                    if (reader.peek() == Token.NULL) {
                         reader.nextNull();
                     } else {
                         professionalexperience.setAwards(AwardMapper.parseAwardList(reader));
@@ -82,27 +150,5 @@ public final class ProfessionalExperienceMapper {
         }
         reader.endObject();
         return professionalexperience;
-    }
-
-    /**
-     * Gets a list of Professional experiences.
-     *
-     * @param reader A JsonReader object that contains the education backgrounds
-     * @return A list of ProfessionalExperience objects
-     *
-     * @throws IOException
-     */
-    public static List<ProfessionalExperience> parseProfessionalExperienceList(JsonReader reader) throws IOException {
-        List<ProfessionalExperience> professionalExperienceList = new ArrayList<>(0);
-        reader.beginArray();
-        while (reader.hasNext()) {
-            professionalExperienceList.add(parseProfessionalExperience(reader));
-        }
-        reader.endArray();
-        return professionalExperienceList;
-    }
-
-    private ProfessionalExperienceMapper() {
-        throw new AssertionError("No instances.");
     }
 }

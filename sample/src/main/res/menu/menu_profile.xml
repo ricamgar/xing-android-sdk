@@ -37,6 +37,12 @@
         android:orderInCategory="100"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/action_recommendations"
+        android:title="@string/recommendations_label"
+        android:icon="@drawable/ic_visibility_white_24dp"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/action_logout"
         android:title="@string/logout_text"
         android:orderInCategory="100"

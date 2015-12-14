@@ -29,6 +29,7 @@ import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor.Level;
+import com.xing.android.sdk.model.Recommendation;
 import com.xing.android.sdk.model.XingCalendar;
 import com.xing.android.sdk.model.user.CompanySize;
 import com.xing.android.sdk.model.user.Gender;
@@ -209,6 +210,7 @@ public final class XingApi {
             moshiBuilder.add(PremiumService.class, new PremiumServiceJsonAdapter());
             moshiBuilder.add(CompanySize.class, new CompanySizeJsonAdapter());
             moshiBuilder.add(EnumMapJsonAdapter.FACTORY);
+            moshiBuilder.add(Recommendation.class, new RecommendationJsonAdapter());
 
             return new XingApi(client, apiEndpoint, moshiBuilder.build());
         }
