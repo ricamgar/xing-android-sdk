@@ -42,7 +42,6 @@ import java.util.regex.Pattern;
  * @see <a href="https://dev.xing.com/docs/post/users/me/educational_background/schools">School</a>
  */
 public class School implements Serializable, Parcelable {
-    private static final long serialVersionUID = -700850712160641923L;
     /** Creator object for Parcelable contract. */
     public static final Creator<School> CREATOR = new Creator<School>() {
         @Override
@@ -55,6 +54,7 @@ public class School implements Serializable, Parcelable {
             return new School[size];
         }
     };
+    private static final long serialVersionUID = -700850712160641923L;
     private static final Pattern COMPILE = Pattern.compile(", ");
 
     /** School ID. */

@@ -105,7 +105,8 @@ public class VisitorsRecyclerAdapter extends RecyclerView.Adapter<VisitorsRecycl
         if (profileVisits != null && !profileVisits.isEmpty()) {
             int count = getItemCount();
             items.addAll(profileVisits);
-            notifyItemRangeInserted(count, items.size());
+            notifyDataSetChanged();
+//            notifyItemRangeInserted(count, items.size());
         }
     }
 

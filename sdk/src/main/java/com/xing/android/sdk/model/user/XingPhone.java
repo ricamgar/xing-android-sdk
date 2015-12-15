@@ -36,8 +36,6 @@ import java.io.Serializable;
  * @see <a href="https://dev.xing.com/docs/put/users/me/private_address">Address</a>
  */
 public class XingPhone implements Serializable, Parcelable {
-    private static final long serialVersionUID = -973963783219359383L;
-    private static final char SEPARATOR = '|';
     public static final Creator<XingPhone> CREATOR = new Creator<XingPhone>() {
         @Override
         public XingPhone createFromParcel(Parcel parcel) {
@@ -49,7 +47,8 @@ public class XingPhone implements Serializable, Parcelable {
             return new XingPhone[size];
         }
     };
-
+    private static final long serialVersionUID = -973963783219359383L;
+    private static final char SEPARATOR = '|';
     private String countryCode;
     private String areaCode;
     private String number;

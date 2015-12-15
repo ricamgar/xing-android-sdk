@@ -36,6 +36,10 @@ import java.util.List;
  * @author david.gonzalez
  */
 public final class AwardMapper {
+    private AwardMapper() {
+        throw new AssertionError("No instances.");
+    }
+
     /**
      * Parser method to extract the single awards from a list of awards.
      *
@@ -94,9 +98,5 @@ public final class AwardMapper {
         }
         reader.endArray();
         return awardList;
-    }
-
-    private AwardMapper() {
-        throw new AssertionError("No instances.");
     }
 }

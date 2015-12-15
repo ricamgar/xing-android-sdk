@@ -71,6 +71,16 @@ import static com.xing.android.sdk.Utils.ioError;
  * @author serj.lotutovici
  */
 final class CompositeType {
+    private final Type classType;
+    private final String[] roots;
+    private final Structure structure;
+
+    private CompositeType(Type classType, Structure structure, String... roots) {
+        this.classType = classType;
+        this.structure = structure;
+        this.roots = roots;
+    }
+
     /**
      * Returns a {@link CompositeType} that will expect a single object in the root tree.
      */
@@ -89,27 +99,39 @@ final class CompositeType {
         return new CompositeType(classType, Structure.FIRST, roots);
     }
 
-    private final Type classType;
-    private final String[] roots;
-    private final Structure structure;
-
     /**
-     * This enum defines the possible response types a user can expect.
-     * These are:
-     * SINGLE - A single object
-     * LIST - A list of objects
-     * FIRST - A single object wrapped in a list structure (happens often in profile resources)
+     * Recursive method that goes through the JSON, finds the given root and returns the objects with the provided
+     * roots.
      */
-    enum Structure {
-        SINGLE,
-        LIST,
-        FIRST
-    }
+    @Nullable
+    private static <T> T readRootLeafs(@NonNull JsonAdapter<T> adapter, @NonNull JsonReader reader,
+          @NonNull String[] roots, int index) throws IOException {
+        if (index == roots.length) {
+            return adapter.fromJson(reader);
+        } else {
+            reader.beginObject();
+            try {
+                String root = roots[index];
+                while (reader.hasNext()) {
+                    if (reader.nextName().equals(root)) {
+                        if (reader.peek() == JsonReader.Token.NULL) {
+                            return reader.nextNull();
+                        }
 
-    private CompositeType(Type classType, Structure structure, String... roots) {
-        this.classType = classType;
-        this.structure = structure;
-        this.roots = roots;
+                        return readRootLeafs(adapter, reader, roots, ++index);
+                    } else {
+                        reader.skipValue();
+                    }
+                }
+            } finally {
+                try {
+                    reader.endObject();
+                } catch (IOException ioe) {
+                    // Ignore, in case we are closing early.
+                }
+            }
+            throw ioError("Json does not match expected structure for roots %s.", Arrays.asList(roots));
+        }
     }
 
     /**
@@ -146,37 +168,15 @@ final class CompositeType {
     }
 
     /**
-     * Recursive method that goes through the JSON, finds the given root and returns the objects with the provided
-     * roots.
+     * This enum defines the possible response types a user can expect.
+     * These are:
+     * SINGLE - A single object
+     * LIST - A list of objects
+     * FIRST - A single object wrapped in a list structure (happens often in profile resources)
      */
-    @Nullable
-    private static <T> T readRootLeafs(@NonNull JsonAdapter<T> adapter, @NonNull JsonReader reader,
-          @NonNull String[] roots, int index) throws IOException {
-        if (index == roots.length) {
-            return adapter.fromJson(reader);
-        } else {
-            reader.beginObject();
-            try {
-                String root = roots[index];
-                while (reader.hasNext()) {
-                    if (reader.nextName().equals(root)) {
-                        if (reader.peek() == JsonReader.Token.NULL) {
-                            return reader.nextNull();
-                        }
-
-                        return readRootLeafs(adapter, reader, roots, ++index);
-                    } else {
-                        reader.skipValue();
-                    }
-                }
-            } finally {
-                try {
-                    reader.endObject();
-                } catch (IOException ioe) {
-                    // Ignore, in case we are closing early.
-                }
-            }
-            throw ioError("Json does not match expected structure for roots %s.", Arrays.asList(roots));
-        }
+    enum Structure {
+        SINGLE,
+        LIST,
+        FIRST
     }
 }

@@ -39,7 +39,6 @@ import java.io.Serializable;
  */
 @SuppressWarnings("unused")
 public class ContactRequest implements Serializable, Parcelable {
-    private static final long serialVersionUID = 1792283724323281L;
     /** Creator object for the Parcelable contract. */
     public static final Creator<ContactRequest> CREATOR = new Creator<ContactRequest>() {
         @Override
@@ -52,7 +51,7 @@ public class ContactRequest implements Serializable, Parcelable {
             return new ContactRequest[size];
         }
     };
-
+    private static final long serialVersionUID = 1792283724323281L;
     /** ID of sender. */
     @Json(name = "sender_id")
     private String senderId;

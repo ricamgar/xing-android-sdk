@@ -43,8 +43,6 @@ import java.util.Calendar;
  */
 @SuppressWarnings("unused")
 public class Award implements Serializable, Parcelable {
-    private static final long serialVersionUID = 1792717237671423281L;
-
     /** Creator object for Parcelable contract. */
     public static final Creator<Award> CREATOR = new Creator<Award>() {
         @Override
@@ -57,7 +55,7 @@ public class Award implements Serializable, Parcelable {
             return new Award[size];
         }
     };
-
+    private static final long serialVersionUID = 1792717237671423281L;
     /** Name of the award. */
     @Json(name = "name")
     private String name;

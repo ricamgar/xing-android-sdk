@@ -38,6 +38,10 @@ import java.util.List;
  * @author david.gonzalez
  */
 public final class SchoolMapper {
+    private SchoolMapper() {
+        throw new AssertionError("No instances.");
+    }
+
     /**
      * Extracts the detail information about a school.
      *
@@ -129,9 +133,5 @@ public final class SchoolMapper {
         }
         reader.endArray();
         return schoolList;
-    }
-
-    private SchoolMapper() {
-        throw new AssertionError("No instances.");
     }
 }

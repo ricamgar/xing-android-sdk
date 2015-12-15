@@ -62,7 +62,8 @@ public final class ProfessionalExperienceMapper {
 //                    if (reader.peek() == JsonToken.NULL) {
 //                        reader.nextNull();
 //                    } else {
-//                        professionalexperience.setCompanies(ExperienceCompanyMapper.parseExperienceCompanyList(reader));
+//                        professionalexperience.setCompanies(ExperienceCompanyMapper.parseExperienceCompanyList
+// (reader));
 //                    }
 //                    break;
 //                }
@@ -114,7 +115,8 @@ public final class ProfessionalExperienceMapper {
         reader.endArray();
         return professionalExperienceList;
     }
-    public static ProfessionalExperience parseProfessionalExperience(com.squareup.moshi.JsonReader reader) throws IOException {
+    public static ProfessionalExperience parseProfessionalExperience(com.squareup.moshi.JsonReader reader) throws
+    IOException {
         ProfessionalExperience professionalexperience = new ProfessionalExperience();
         reader.beginObject();
         while (reader.hasNext()) {

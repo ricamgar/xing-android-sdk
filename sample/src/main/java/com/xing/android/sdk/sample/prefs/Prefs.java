@@ -84,11 +84,11 @@ public final class Prefs {
         editor.apply();
     }
 
-    public void setUserId(String userId) {
-        edit(KEY_USER_ID, userId);
-    }
-
     public String getUserId() {
         return preferences.getString(KEY_USER_ID, "");
+    }
+
+    public void setUserId(String userId) {
+        edit(KEY_USER_ID, userId);
     }
 }

@@ -31,11 +31,11 @@ import com.xing.android.sdk.sample.prefs.Prefs;
  * @author ciprian.ursu
  */
 public final class Utils {
-    public static boolean isLoggedIn(Context context) {
-        return !TextUtils.isEmpty(Prefs.getInstance(context).getOauthToken());
-    }
-
     private Utils() {
         throw new AssertionError("No instances.");
+    }
+
+    public static boolean isLoggedIn(Context context) {
+        return !TextUtils.isEmpty(Prefs.getInstance(context).getOauthToken());
     }
 }

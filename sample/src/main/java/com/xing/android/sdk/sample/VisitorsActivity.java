@@ -24,7 +24,6 @@ package com.xing.android.sdk.sample;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -34,19 +33,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.squareup.okhttp.logging.HttpLoggingInterceptor.Level;
+import com.xing.android.sdk.Callback;
+import com.xing.android.sdk.Response;
+import com.xing.android.sdk.XingApi;
 import com.xing.android.sdk.model.user.ProfileVisit;
-import com.xing.android.sdk.network.XingController;
+import com.xing.android.sdk.resources.ProfileVisitsResource;
 import com.xing.android.sdk.sample.adapters.VisitorsRecyclerAdapter;
-import com.xing.android.sdk.sample.utils.EndlessRecyclerOnScrollListener;
+import com.xing.android.sdk.sample.prefs.Prefs;
 import com.xing.android.sdk.sample.utils.RecyclerItemClickListener;
 import com.xing.android.sdk.sample.utils.RecyclerItemClickListener.OnItemClickListener;
-import com.xing.android.sdk.task.OnTaskFinishedListener;
 import com.xing.android.sdk.task.profile_visits.VisitsTask;
 
 import java.util.List;
 
-public class VisitorsActivity extends BaseActivity implements OnTaskFinishedListener<List<ProfileVisit>>,
-        OnItemClickListener {
+public class VisitorsActivity extends BaseActivity implements OnItemClickListener,
+      Callback<List<ProfileVisit>, Object> {
 
     //The amount of contacts that should be loaded at a time
     private static final int VISITS_BATCH_SIZE = 10;
@@ -55,6 +57,8 @@ public class VisitorsActivity extends BaseActivity implements OnTaskFinishedList
     //Boolean to see if the load more functionality should be triggered
     private boolean shouldLoadMore = true;
     private VisitsTask mVisitsTask;
+
+    private XingApi api;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,29 +72,26 @@ public class VisitorsActivity extends BaseActivity implements OnTaskFinishedList
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        //Executing the ContactsTask with the parameters specified above
-        mVisitsTask = new VisitsTask(ME, null, null, null, true, this, this);
-        XingController.getInstance().executeAsync(mVisitsTask);
+        api = new XingApi.Builder()
+              .consumerKey(BuildConfig.OAUTH_CONSUMER_KEY)
+              .consumerSecret(BuildConfig.OAUTH_CONSUMER_SECRET)
+              .accessToken(Prefs.getInstance(this).getOauthToken())
+              .accessSecret(Prefs.getInstance(this).getOauthSecret())
+              .logLevel(Level.BODY)
+              .build();
+
+        ProfileVisitsResource profileVisitsResource = api.resource(ProfileVisitsResource.class);
+        profileVisitsResource.getProfileVisits(Prefs.getInstance(this).getUserId()).enqueue(this);
 
         //Initialize the RecyclerView
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.visitors_recycler);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(false);
 
         //Setting the adapter passing the contact list of a user
         // and the default on which we contacts will be rendered
         adapter = new VisitorsRecyclerAdapter(this, R.layout.visitor_view);
-
-        //Adding the onScrollListener to the recyclerView
-        // in order to get notified when the user reaches the end of the list
-        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
-                    @Override
-                    public void onLoadMore(int currentPage) {
-                        loadMore();
-                    }
-                });
 
         recyclerView.setAdapter(adapter);
         recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, this));
@@ -112,32 +113,6 @@ public class VisitorsActivity extends BaseActivity implements OnTaskFinishedList
     }
 
     @Override
-    public void onSuccess(@Nullable List<ProfileVisit> result) {
-        if (result != null) {
-            //After the first contacts are loaded successfully we set them to the adapter
-            adapter.addItems(result);
-            if (result.size() < VISITS_BATCH_SIZE) {
-                //If the amount of received contacts is smaller than the batch size we know
-                //that we've reached the end of the list so the next time load more should not be triggered
-                shouldLoadMore = false;
-            }
-        } else {
-            shouldLoadMore = false;
-        }
-    }
-
-    @Override
-    public void onError(Exception exception) {
-        Log.d("Error in visitors", exception.getMessage());
-    }
-
-    private void loadMore() {
-        if (shouldLoadMore) {
-            XingController.getInstance().executeAsync(mVisitsTask);
-        }
-    }
-
-    @Override
     public void onItemClick(View view, int position) {
         String userId = adapter.getItem(position).getUserId();
         if (userId != null && !TextUtils.isEmpty(userId)) {
@@ -149,9 +124,23 @@ public class VisitorsActivity extends BaseActivity implements OnTaskFinishedList
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        XingController.getInstance().cancelExecution(this);
+    public void onResponse(Response<List<ProfileVisit>, Object> response) {
+        if (response.body() != null) {
+            //After the first contacts are loaded successfully we set them to the adapter
+            adapter.addItems(response.body());
+            if (response.body().size() < VISITS_BATCH_SIZE) {
+                //If the amount of received contacts is smaller than the batch size we know
+                //that we've reached the end of the list so the next time load more should not be triggered
+                shouldLoadMore = false;
+            }
+        } else {
+            shouldLoadMore = false;
+        }
+    }
+
+    @Override
+    public void onFailure(Throwable t) {
+        Log.d("Visitor Error", t.getMessage(), t);
     }
 }
 

@@ -32,16 +32,6 @@ import com.xing.android.sdk.sample.utils.Utils;
  * @author daniel.hartwich
  */
 public class SdkSampleApplication extends Application {
-    @Override
-    public void onCreate() {
-        Prefs prefs = Prefs.getInstance(this);
-        if (Utils.isLoggedIn(this)) {
-            //noinspection ConstantConditions
-            initializeXingRequestController(prefs.getOauthToken(), prefs.getOauthSecret());
-        }
-        super.onCreate();
-    }
-
     /**
      * Initializing the XingRequest Controller using the oAuth Token and the oAuthSecret.
      */
@@ -53,5 +43,15 @@ public class SdkSampleApplication extends Application {
               .setToken(oAuthToken)
               .setTokenSecret(oAuthSecret)
               .init();
+    }
+
+    @Override
+    public void onCreate() {
+        Prefs prefs = Prefs.getInstance(this);
+        if (Utils.isLoggedIn(this)) {
+            //noinspection ConstantConditions
+            initializeXingRequestController(prefs.getOauthToken(), prefs.getOauthSecret());
+        }
+        super.onCreate();
     }
 }

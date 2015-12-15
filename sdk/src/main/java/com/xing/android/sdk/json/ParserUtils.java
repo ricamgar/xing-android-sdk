@@ -36,6 +36,10 @@ import java.util.List;
 import java.util.Set;
 
 public final class ParserUtils {
+    private ParserUtils() {
+        throw new AssertionError("No instances.");
+    }
+
     /**
      * Convert string to Uri.
      *
@@ -105,9 +109,5 @@ public final class ParserUtils {
      */
     public static boolean isNextTokenNull(JsonReader reader) throws IOException {
         return reader.peek() == Token.NULL;
-    }
-
-    private ParserUtils() {
-        throw new AssertionError("No instances.");
     }
 }

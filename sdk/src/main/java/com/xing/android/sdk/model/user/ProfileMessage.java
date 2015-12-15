@@ -37,7 +37,6 @@ import java.io.Serializable;
  * @see <a href="https://dev.xing.com/docs/get/users/:user_id/profile_message">User Profile Message</a>
  */
 public class ProfileMessage implements Serializable, Parcelable {
-    private static final long serialVersionUID = -132857097764920225L;
     /** Creator object for Parcelable contract. */
     public static final Creator<ProfileMessage> CREATOR = new Creator<ProfileMessage>() {
         @Override
@@ -50,7 +49,7 @@ public class ProfileMessage implements Serializable, Parcelable {
             return new ProfileMessage[size];
         }
     };
-
+    private static final long serialVersionUID = -132857097764920225L;
     /** Date message was updated. */
     @Json(name = "updated_at")
     private XingCalendar updatedAt;

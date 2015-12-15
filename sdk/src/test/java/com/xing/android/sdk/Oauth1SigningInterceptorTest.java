@@ -35,6 +35,18 @@ import static org.mockito.Mockito.when;
 public final class Oauth1SigningInterceptorTest {
     Oauth1SigningInterceptor oauth1;
 
+    /** Asserts that the provided request contains an expected header, with provided oauth signature. */
+    private static void assertAuthHeader(Request request, String signature) {
+        assertThat(request.header("Authorization")).isEqualTo(
+                "OAuth " + "oauth_consumer_key=\"xvz1evFS4wEEPTGEFPHBog\", "
+                        + "oauth_nonce=\"kYjzVBB8Y0ZFabxSWbWovY3uYSQ2pTgmZeNu2VS4cg\", "
+                        + "oauth_signature=\"" + signature + "\", "
+                        + "oauth_signature_method=\"HMAC-SHA1\", "
+                        + "oauth_timestamp=\"1318622958\", "
+                        + "oauth_token=\"370773112-GmHxMAgYyLbNEtIKZeRNFsMKPR9EyMZeS9weJAEb\", "
+                        + "oauth_version=\"1.0\"");
+    }
+
     @Before
     public void setUp() throws IOException {
         // Data from https://dev.twitter.com/oauth/overview/authorizing-requests.
@@ -117,17 +129,5 @@ public final class Oauth1SigningInterceptorTest {
 
         Request signed = oauth1.signRequest(request);
         assertAuthHeader(signed, "Z3saYRlzqfBzE%2BWTEzZtolIhJkc%3D");
-    }
-
-    /** Asserts that the provided request contains an expected header, with provided oauth signature. */
-    private static void assertAuthHeader(Request request, String signature) {
-        assertThat(request.header("Authorization")).isEqualTo(
-                "OAuth " + "oauth_consumer_key=\"xvz1evFS4wEEPTGEFPHBog\", "
-                        + "oauth_nonce=\"kYjzVBB8Y0ZFabxSWbWovY3uYSQ2pTgmZeNu2VS4cg\", "
-                        + "oauth_signature=\"" + signature + "\", "
-                        + "oauth_signature_method=\"HMAC-SHA1\", "
-                        + "oauth_timestamp=\"1318622958\", "
-                        + "oauth_token=\"370773112-GmHxMAgYyLbNEtIKZeRNFsMKPR9EyMZeS9weJAEb\", "
-                        + "oauth_version=\"1.0\"");
     }
 }

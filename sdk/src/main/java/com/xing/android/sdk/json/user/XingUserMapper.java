@@ -50,6 +50,10 @@ import static com.xing.android.sdk.json.ParserUtils.parseArrayOfStringsToSet;
  */
 public final class XingUserMapper {
 
+    private XingUserMapper() {
+        throw new AssertionError("No instances.");
+    }
+
     private static void parseLanguages(JsonReader reader, XingUser xinguser) throws IOException {
         reader.beginObject();
         while (reader.hasNext()) {
@@ -137,10 +141,6 @@ public final class XingUserMapper {
         }
         reader.endArray();
         return xingUserList;
-    }
-
-    private XingUserMapper() {
-        throw new AssertionError("No instances.");
     }
 
     public static XingUser parseXingUser(JsonReader reader) throws IOException {

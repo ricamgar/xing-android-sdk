@@ -37,6 +37,10 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public final class TimeZoneMapper {
+    private TimeZoneMapper() {
+        throw new AssertionError("No instances.");
+    }
+
     /**
      * Extracts the TimeZone out of the JsonReader.
      *
@@ -90,9 +94,5 @@ public final class TimeZoneMapper {
         }
         reader.endArray();
         return timezoneList;
-    }
-
-    private TimeZoneMapper() {
-        throw new AssertionError("No instances.");
     }
 }

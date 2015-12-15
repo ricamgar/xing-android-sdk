@@ -53,17 +53,23 @@ import static com.xing.android.sdk.Utils.stateNull;
  * @author serj.lotutovici
  */
 public final class XingApi {
-    @SuppressWarnings("CollectionWithoutInitialCapacity")
-    private final Map<Class<? extends Resource>, Resource> resourcesCache = new LinkedHashMap<>();
-
     final OkHttpClient client;
     final HttpUrl apiEndpoint;
     final Moshi converter;
+    @SuppressWarnings("CollectionWithoutInitialCapacity")
+    private final Map<Class<? extends Resource>, Resource> resourcesCache = new LinkedHashMap<>();
 
     private XingApi(OkHttpClient client, HttpUrl apiEndpoint, Moshi converter) {
         this.client = client;
         this.apiEndpoint = apiEndpoint;
         this.converter = converter;
+    }
+
+    /** Throws an exception if class was declared non-static. */
+    private static void checkResourceClassDeclaration(Class<? extends Resource> resource) {
+        if (resource.isLocalClass() || (resource.isMemberClass() && !Modifier.isStatic(resource.getModifiers()))) {
+            throw new IllegalArgumentException("Resource class must be static.");
+        }
     }
 
     /** Return a {@link Resource} instance that specified by the provided class name. */
@@ -82,13 +88,6 @@ public final class XingApi {
             }
         }
         return (T) res;
-    }
-
-    /** Throws an exception if class was declared non-static. */
-    private static void checkResourceClassDeclaration(Class<? extends Resource> resource) {
-        if (resource.isLocalClass() || (resource.isMemberClass() && !Modifier.isStatic(resource.getModifiers()))) {
-            throw new IllegalArgumentException("Resource class must be static.");
-        }
     }
 
     /**

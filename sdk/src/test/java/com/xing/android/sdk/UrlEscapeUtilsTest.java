@@ -32,6 +32,54 @@ import static org.junit.Assert.fail;
  * @author Sven Mawson
  */
 public class UrlEscapeUtilsTest {
+    /**
+     * Asserts that {@link UrlEscapeUtils} escapes the given character.
+     *
+     * @param expected the expected escape result
+     * @param c the character to test
+     */
+    private static void assertEscaping(String expected, char c) {
+        String escaped = computeReplacement(c);
+        assertNotNull(escaped);
+        assertEquals(expected, escaped);
+    }
+
+    /**
+     * Asserts that {@link UrlEscapeUtils} does not escape the given character.
+     *
+     * @param c the character to test
+     */
+    private static void assertUnescaped(char c) {
+        assertNull(computeReplacement(c));
+    }
+
+    /**
+     * Asserts that {@link UrlEscapeUtils} escapes the given hi/lo surrogate pair into
+     * the expected string.
+     *
+     * @param expected the expected output string
+     * @param hi the high surrogate pair character
+     * @param lo the low surrogate pair character
+     */
+    private static void assertUnicodeEscaping(String expected, char hi, char lo) {
+        int cp = Character.toCodePoint(hi, lo);
+        String escaped = computeReplacement(cp);
+        assertNotNull(escaped);
+        assertEquals(expected, escaped);
+    }
+
+    private static String computeReplacement(char c) {
+        return stringOrNull(UrlEscapeUtils.escape(c));
+    }
+
+    private static String computeReplacement(int cp) {
+        return stringOrNull(UrlEscapeUtils.escape(cp));
+    }
+
+    private static String stringOrNull(char[] chars) {
+        return (chars == null) ? null : new String(chars);
+    }
+
     @Test
     public void actsAsUrlFormParameterEscaper() {
         try {
@@ -84,53 +132,5 @@ public class UrlEscapeUtilsTest {
 
         assertEquals("safe%20with%20spaces", UrlEscapeUtils.escape("safe with spaces"));
         assertEquals("foo%40bar.com", UrlEscapeUtils.escape("foo@bar.com"));
-    }
-
-    /**
-     * Asserts that {@link UrlEscapeUtils} escapes the given character.
-     *
-     * @param expected the expected escape result
-     * @param c the character to test
-     */
-    private static void assertEscaping(String expected, char c) {
-        String escaped = computeReplacement(c);
-        assertNotNull(escaped);
-        assertEquals(expected, escaped);
-    }
-
-    /**
-     * Asserts that {@link UrlEscapeUtils} does not escape the given character.
-     *
-     * @param c the character to test
-     */
-    private static void assertUnescaped(char c) {
-        assertNull(computeReplacement(c));
-    }
-
-    /**
-     * Asserts that {@link UrlEscapeUtils} escapes the given hi/lo surrogate pair into
-     * the expected string.
-     *
-     * @param expected the expected output string
-     * @param hi the high surrogate pair character
-     * @param lo the low surrogate pair character
-     */
-    private static void assertUnicodeEscaping(String expected, char hi, char lo) {
-        int cp = Character.toCodePoint(hi, lo);
-        String escaped = computeReplacement(cp);
-        assertNotNull(escaped);
-        assertEquals(expected, escaped);
-    }
-
-    private static String computeReplacement(char c) {
-        return stringOrNull(UrlEscapeUtils.escape(c));
-    }
-
-    private static String computeReplacement(int cp) {
-        return stringOrNull(UrlEscapeUtils.escape(cp));
-    }
-
-    private static String stringOrNull(char[] chars) {
-        return (chars == null) ? null : new String(chars);
     }
 }

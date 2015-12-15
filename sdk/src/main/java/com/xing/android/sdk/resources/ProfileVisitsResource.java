@@ -53,7 +53,7 @@ public class ProfileVisitsResource extends Resource {
     public CallSpec<List<ProfileVisit>, Object> getProfileVisits(String userId) {
         return Resource.<List<ProfileVisit>, Object>newGetSpec(api, "/v1/users/{user_id}/visits")
               .pathParam("user_id", userId)
-              .responseAsListOf(ProfileVisit.class)
+              .responseAsListOf(ProfileVisit.class, "visits")
               .build();
     }
 

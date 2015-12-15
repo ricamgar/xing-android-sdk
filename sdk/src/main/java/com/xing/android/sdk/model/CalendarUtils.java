@@ -78,6 +78,10 @@ public final class CalendarUtils {
         DATE_FORMAT_MAP.put(REG_EX_ISO_DATE_TIME, new SimpleDateFormat(ISO_DATE_FORMAT));
     }
 
+    private CalendarUtils() {
+        throw new AssertionError("No instances.");
+    }
+
     /**
      * Parse the string to a calendar instance.
      *
@@ -195,10 +199,6 @@ public final class CalendarUtils {
     private static boolean isFilledToTime(@NonNull XingCalendar calendar) {
         return calendar.isSet(Calendar.HOUR_OF_DAY) && calendar.isSet(Calendar.MINUTE) && calendar.isSet(
                 Calendar.SECOND);
-    }
-
-    private CalendarUtils() {
-        throw new AssertionError("No instances.");
     }
 }
 

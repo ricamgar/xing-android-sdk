@@ -39,6 +39,10 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public final class EducationalBackgroundMapper {
+    private EducationalBackgroundMapper() {
+        throw new AssertionError("No inspections.");
+    }
+
     /**
      * Parses the Educational Background of a user.
      *
@@ -108,9 +112,5 @@ public final class EducationalBackgroundMapper {
         }
         reader.endArray();
         return educationalBackgroundList;
-    }
-
-    private EducationalBackgroundMapper() {
-        throw new AssertionError("No inspections.");
     }
 }

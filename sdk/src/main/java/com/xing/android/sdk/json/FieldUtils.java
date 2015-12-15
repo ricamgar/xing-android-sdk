@@ -28,6 +28,10 @@ import java.util.List;
  * @author serj.lotutovici
  */
 public final class FieldUtils {
+    private FieldUtils() {
+        throw new AssertionError("No instance.");
+    }
+
     /**
      * Format all list element to a simple string where all elements are divided by a comma.
      *
@@ -49,9 +53,5 @@ public final class FieldUtils {
         }
 
         return output.toString();
-    }
-
-    private FieldUtils() {
-        throw new AssertionError("No instance.");
     }
 }

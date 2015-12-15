@@ -101,6 +101,12 @@ public class ContactsActivity extends BaseActivity implements OnTaskFinishedList
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        XingController.getInstance().cancelExecution(this);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_contacts, menu);
@@ -144,12 +150,6 @@ public class ContactsActivity extends BaseActivity implements OnTaskFinishedList
         Intent intent = new Intent(this, ProfileActivity.class);
         intent.putExtra(ProfileActivity.EXTRA_USER_ID, userId);
         startActivity(intent);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        XingController.getInstance().cancelExecution(this);
     }
 }
 

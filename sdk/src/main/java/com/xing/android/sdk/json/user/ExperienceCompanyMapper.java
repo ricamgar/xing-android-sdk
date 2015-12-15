@@ -39,6 +39,10 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public final class ExperienceCompanyMapper {
+    private ExperienceCompanyMapper() {
+        throw new AssertionError("No instances.");
+    }
+
     /**
      * Parses the ExperienceCompany.
      *
@@ -202,9 +206,5 @@ public final class ExperienceCompanyMapper {
         }
         reader.endArray();
         return experienceCompanyList;
-    }
-
-    private ExperienceCompanyMapper() {
-        throw new AssertionError("No instances.");
     }
 }

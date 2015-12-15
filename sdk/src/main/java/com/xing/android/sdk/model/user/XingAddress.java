@@ -37,7 +37,6 @@ import java.io.Serializable;
  */
 @SuppressWarnings("unused") // Public api
 public class XingAddress implements Serializable, Parcelable {
-    private static final long serialVersionUID = -6309755823721877973L;
     /** Creator object for Parcelable contract. */
     public static final Creator<XingAddress> CREATOR = new Creator<XingAddress>() {
         @Override
@@ -50,7 +49,7 @@ public class XingAddress implements Serializable, Parcelable {
             return new XingAddress[size];
         }
     };
-
+    private static final long serialVersionUID = -6309755823721877973L;
     @Json(name = "city")
     private String city;
     @Json(name = "country")
@@ -164,12 +163,12 @@ public class XingAddress implements Serializable, Parcelable {
         return fax;
     }
 
-    public void setFax(String fax) throws XingPhone.InvalidPhoneException {
-        this.fax = XingPhone.createXingPhone(fax);
-    }
-
     public void setFax(XingPhone fax) {
         this.fax = fax;
+    }
+
+    public void setFax(String fax) throws XingPhone.InvalidPhoneException {
+        this.fax = XingPhone.createXingPhone(fax);
     }
 
     public void setFax(String countryCode, String areaCode, String number)
@@ -189,12 +188,12 @@ public class XingAddress implements Serializable, Parcelable {
         return phone;
     }
 
-    public void setPhone(String phone) throws XingPhone.InvalidPhoneException {
-        this.phone = XingPhone.createXingPhone(phone);
-    }
-
     public void setPhone(XingPhone phone) {
         this.phone = phone;
+    }
+
+    public void setPhone(String phone) throws XingPhone.InvalidPhoneException {
+        this.phone = XingPhone.createXingPhone(phone);
     }
 
     public void setPhone(String countryCode, String areaCode, String number)

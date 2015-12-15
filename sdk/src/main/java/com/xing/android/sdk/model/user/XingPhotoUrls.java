@@ -36,7 +36,6 @@ import java.io.Serializable;
  */
 @SuppressWarnings("unused")
 public class XingPhotoUrls implements Serializable, Parcelable {
-    private static final long serialVersionUID = 1864837657156226558L;
     /** Parcelable creator required by contract. */
     public static final Creator<XingPhotoUrls> CREATOR = new Creator<XingPhotoUrls>() {
 
@@ -50,7 +49,7 @@ public class XingPhotoUrls implements Serializable, Parcelable {
             return new XingPhotoUrls[size];
         }
     };
-
+    private static final long serialVersionUID = 1864837657156226558L;
     @Json(name = "large")
     private String photoLargeUrl;
     @Json(name = "maxi_thumb")

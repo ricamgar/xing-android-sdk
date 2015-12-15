@@ -53,187 +53,22 @@ import com.xing.android.sdk.task.profile_visits.CreateVisitTask;
 import java.util.List;
 
 public class ProfileActivity extends BaseActivity implements OnTaskFinishedListener<XingUser> {
+    public static final String EXTRA_USER_ID = "userid";
     private TextView userDisplayNameView;
     private TextView userPositionView;
     private TextView userCompanyView;
     private ImageView userProfilePictureView;
-
     private TextView userPrivateAddress;
     private TextView userWorkAddress;
     private TextView userHaves;
     private TextView userInterests;
     private TextView userWants;
-
     private String mUserId = "";
-
     private Response<XingUser, Object> response;
-
-    public static final String EXTRA_USER_ID = "userid";
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar_actionbar));
-
-        userDisplayNameView = (TextView) findViewById(R.id.user_display_name);
-        userPositionView = (TextView) findViewById(R.id.user_position);
-        userCompanyView = (TextView) findViewById(R.id.user_company);
-        userProfilePictureView = (ImageView) findViewById(R.id.user_profile_picture);
-        userPrivateAddress = (TextView) findViewById(R.id.user_private_address);
-        userWorkAddress = (TextView) findViewById(R.id.user_work_address);
-        userHaves = (TextView) findViewById(R.id.user_haves);
-        userInterests = (TextView) findViewById(R.id.user_interests);
-        userWants = (TextView) findViewById(R.id.user_wants);
-
-        if (getIntent() != null) {
-            mUserId = getIntent().getStringExtra(EXTRA_USER_ID);
-            if (!TextUtils.isEmpty(mUserId)) {
-                XingApi api = new XingApi.Builder()
-                      .consumerKey(BuildConfig.OAUTH_CONSUMER_KEY)
-                      .consumerSecret(BuildConfig.OAUTH_CONSUMER_SECRET)
-                      .accessToken(Prefs.getInstance(ProfileActivity.this).getOauthToken())
-                      .accessSecret(Prefs.getInstance(ProfileActivity.this).getOauthSecret())
-                      .apiEndpoint("https://api.xing.com")
-                      .logLevel(Level.BODY)
-                      .build();
-                UserProfilesResource profilesResource = api.resource(UserProfilesResource.class);
-                profilesResource.getUsersById(mUserId).enqueue(new Callback<XingUser, Object>() {
-                    @Override
-                    public void onResponse(Response<XingUser, Object> result) {
-                        if (result != null) {
-                            //Save the user id to the preferences since it might be needed in other parts of the app
-                            if (!TextUtils.isEmpty(mUserId)) {
-                                Prefs.getInstance(ProfileActivity.this).setUserId(result.body().getId());
-                                CreateVisitTask visitTask =
-                                      new CreateVisitTask(result.body().getId(), this, new
-                                            OnTaskFinishedListener<Void>() {
-                                                @Override
-                                                public void onSuccess(@Nullable Void result) {
-                                                }
-
-                                                @Override
-                                                public void onError(Exception exception) {
-                                                }
-                                            });
-                                XingController.getInstance().executeAsync(visitTask);
-                            }
-
-                            if (result.body().getPhotoUrls().getPhotoSize256Url() != null) {
-                                new DownloadImageTask(userProfilePictureView).
-                                      execute(result.body().getPhotoUrls().getPhotoSize256Url().toString());
-                            }
-
-                            //After the request was succesfully executed update all fields with the appropriate values
-                            populateTextView(userDisplayNameView, result.body().getDisplayName());
-                            populateTextView(userCompanyView, result.body().getPrimaryInstitutionName());
-                            populateTextView(userPositionView, result.body().getPrimaryOccupationName());
-                            populateTextView(userPrivateAddress, formatAddress(result.body().getPrivateAddress()));
-                            populateTextView(userWorkAddress, formatAddress(result.body().getBusinessAddress()));
-                            populateTextView(userHaves, result.body().getHaves());
-                            populateTextView(userInterests, result.body().getInterests());
-                            populateTextView(userWants, result.body().getWants());
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-
-                    }
-                });
-            } else {
-                //Execute the task in order to get the users profile
-                new OwnProfileTask().execute(this);
-            }
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        if (TextUtils.isEmpty(mUserId)) {
-            //If User is on his own profile go ahead and show the menu
-            getMenuInflater().inflate(R.menu.menu_profile, menu);
-        } else {
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.action_contacts:
-                startActivity(new Intent(this, ContactsActivity.class));
-                return true;
-            case R.id.action_logout:
-                Prefs.getInstance(this).logout();
-                startActivity(new Intent(this, MainActivity.class).
-                      setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                return true;
-            case R.id.action_visitors:
-                startActivity(new Intent(this, VisitorsActivity.class));
-                return true;
-            case R.id.action_recommendations:
-                startActivity(new Intent(this, RecommendationActivity.class));
-                return true;
-            case android.R.id.home:
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void onSuccess(@Nullable XingUser result) {
-        if (result != null) {
-            //Save the user id to the preferences since it might be needed in other parts of the app
-            if (!TextUtils.isEmpty(mUserId)) {
-                Prefs.getInstance(this).setUserId(result.getId());
-                CreateVisitTask visitTask =
-                      new CreateVisitTask(result.getId(), this, new OnTaskFinishedListener<Void>() {
-                          @Override
-                          public void onSuccess(@Nullable Void result) {
-                          }
-
-                          @Override
-                          public void onError(Exception exception) {
-                          }
-                      });
-                XingController.getInstance().executeAsync(visitTask);
-            }
-
-            if (result.getPhotoUrls().getPhotoSize256Url() != null) {
-                new DownloadImageTask(userProfilePictureView).
-                      execute(result.getPhotoUrls().getPhotoSize256Url().toString());
-            }
-
-            //After the request was succesfully executed update all fields with the appropriate values
-            populateTextView(userDisplayNameView, result.getDisplayName());
-            populateTextView(userCompanyView, result.getPrimaryInstitutionName());
-            populateTextView(userPositionView, result.getPrimaryOccupationName());
-            populateTextView(userPrivateAddress, formatAddress(result.getPrivateAddress()));
-            populateTextView(userWorkAddress, formatAddress(result.getBusinessAddress()));
-            populateTextView(userHaves, result.getHaves());
-            populateTextView(userInterests, result.getInterests());
-            populateTextView(userWants, result.getWants());
-        }
-    }
+    private XingApi api;
 
     private static void populateTextView(TextView textView, String value) {
         textView.setText(!TextUtils.isEmpty(value) ? value : "");
-    }
-
-    @Override
-    public void onError(Exception exception) {
-        Log.d("Error loading profile", exception.getMessage());
     }
 
     /**
@@ -280,9 +115,163 @@ public class ProfileActivity extends BaseActivity implements OnTaskFinishedListe
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_profile);
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar_actionbar));
+
+        api = new XingApi.Builder()
+              .consumerKey(BuildConfig.OAUTH_CONSUMER_KEY)
+              .consumerSecret(BuildConfig.OAUTH_CONSUMER_SECRET)
+              .accessToken(Prefs.getInstance(this).getOauthToken())
+              .accessSecret(Prefs.getInstance(this).getOauthSecret())
+              .apiEndpoint("https://api.xing.com")
+              .logLevel(Level.BODY)
+              .build();
+
+        userDisplayNameView = (TextView) findViewById(R.id.user_display_name);
+        userPositionView = (TextView) findViewById(R.id.user_position);
+        userCompanyView = (TextView) findViewById(R.id.user_company);
+        userProfilePictureView = (ImageView) findViewById(R.id.user_profile_picture);
+        userPrivateAddress = (TextView) findViewById(R.id.user_private_address);
+        userWorkAddress = (TextView) findViewById(R.id.user_work_address);
+        userHaves = (TextView) findViewById(R.id.user_haves);
+        userInterests = (TextView) findViewById(R.id.user_interests);
+        userWants = (TextView) findViewById(R.id.user_wants);
+
+        if (getIntent() != null) {
+            mUserId = getIntent().getStringExtra(EXTRA_USER_ID);
+            if (!TextUtils.isEmpty(mUserId)) {
+                UserProfilesResource profilesResource = api.resource(UserProfilesResource.class);
+                profilesResource.getUsersById(mUserId)
+                      .queryParam("fields", "id,display_name,private_address,professional_experience")
+                      .enqueue(new Callback<XingUser, Object>() {
+                          @Override
+                          public void onResponse(Response<XingUser, Object> result) {
+                              if (result != null) {
+                                  //Save the user id to the preferences since it might be needed in other parts of
+                                  // the app
+                                  Prefs.getInstance(ProfileActivity.this).setUserId(result.body().getId());
+
+                                  if (result.body().getPhotoUrls().getPhotoSize256Url() != null) {
+                                      new DownloadImageTask(userProfilePictureView).
+                                            execute(result.body().getPhotoUrls().getPhotoSize256Url().toString());
+                                  }
+
+                                  //After the request was succesfully executed update all fields with the appropriate
+                                  // values
+                                  populateTextView(userDisplayNameView, result.body().getDisplayName());
+                                  populateTextView(userCompanyView, result.body().getPrimaryInstitutionName());
+                                  populateTextView(userPositionView, result.body().getPrimaryOccupationName());
+                                  populateTextView(userPrivateAddress,
+                                        formatAddress(result.body().getPrivateAddress()));
+                                  populateTextView(userWorkAddress, formatAddress(result.body().getBusinessAddress()));
+                                  populateTextView(userHaves, result.body().getHaves());
+                                  populateTextView(userInterests, result.body().getInterests());
+                                  populateTextView(userWants, result.body().getWants());
+                              }
+                          }
+
+                          @Override
+                          public void onFailure(Throwable t) {
+                              Log.d("Profile Error", t.getMessage(), t);
+                          }
+                      });
+            } else {
+                //Execute the task in order to get the users profile
+                new OwnProfileTask().execute(this);
+            }
+        }
+    }
+
+    @Override
+    public void onSuccess(@Nullable XingUser result) {
+        if (result != null) {
+            //Save the user id to the preferences since it might be needed in other parts of the app
+            if (!TextUtils.isEmpty(mUserId)) {
+                Prefs.getInstance(this).setUserId(result.getId());
+                CreateVisitTask visitTask =
+                      new CreateVisitTask(result.getId(), this, new OnTaskFinishedListener<Void>() {
+                          @Override
+                          public void onSuccess(@Nullable Void result) {
+                          }
+
+                          @Override
+                          public void onError(Exception exception) {
+                          }
+                      });
+                XingController.getInstance().executeAsync(visitTask);
+            }
+
+            if (result.getPhotoUrls().getPhotoSize256Url() != null) {
+                new DownloadImageTask(userProfilePictureView).
+                      execute(result.getPhotoUrls().getPhotoSize256Url().toString());
+            }
+
+            //After the request was succesfully executed update all fields with the appropriate values
+            populateTextView(userDisplayNameView, result.getDisplayName());
+            populateTextView(userCompanyView, result.getPrimaryInstitutionName());
+            populateTextView(userPositionView, result.getPrimaryOccupationName());
+            populateTextView(userPrivateAddress, formatAddress(result.getPrivateAddress()));
+            populateTextView(userWorkAddress, formatAddress(result.getBusinessAddress()));
+            populateTextView(userHaves, result.getHaves());
+            populateTextView(userInterests, result.getInterests());
+            populateTextView(userWants, result.getWants());
+        }
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         XingController.getInstance().cancelExecution(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        if (TextUtils.isEmpty(mUserId)) {
+            //If User is on his own profile go ahead and show the menu
+            getMenuInflater().inflate(R.menu.menu_profile, menu);
+        } else {
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void onError(Exception exception) {
+        Log.d("Error loading profile", exception.getMessage());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_contacts:
+                startActivity(new Intent(this, ContactsActivity.class));
+                return true;
+            case R.id.action_logout:
+                Prefs.getInstance(this).logout();
+                startActivity(new Intent(this, MainActivity.class).
+                      setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                return true;
+            case R.id.action_visitors:
+                startActivity(new Intent(this, VisitorsActivity.class));
+                return true;
+            case R.id.action_recommendations:
+                startActivity(new Intent(this, RecommendationActivity.class));
+                return true;
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public class OwnProfileTask extends AsyncTask<Activity, Void, XingUser> {
@@ -290,14 +279,6 @@ public class ProfileActivity extends BaseActivity implements OnTaskFinishedListe
         @Nullable
         @Override
         protected XingUser doInBackground(Activity... params) {
-            XingApi api = new XingApi.Builder()
-                  .consumerKey(BuildConfig.OAUTH_CONSUMER_KEY)
-                  .consumerSecret(BuildConfig.OAUTH_CONSUMER_SECRET)
-                  .accessToken(Prefs.getInstance(ProfileActivity.this).getOauthToken())
-                  .accessSecret(Prefs.getInstance(ProfileActivity.this).getOauthSecret())
-                  .apiEndpoint("https://api.xing.com")
-                  .logLevel(Level.BODY)
-                  .build();
             UserProfilesResource profilesResource = api.resource(UserProfilesResource.class);
             ProfileEditingResource editingResource = api.resource(ProfileEditingResource.class);
             Response<XingUser, Object> response = null;

@@ -42,6 +42,10 @@ import java.util.List;
 public final class XingAddressMapper {
     private static final String TAG = "XingAddressMapper";
 
+    private XingAddressMapper() {
+        throw new AssertionError("No instances.");
+    }
+
     /**
      * Extracts the XingAddress out of the JsonReader.
      *
@@ -166,10 +170,6 @@ public final class XingAddressMapper {
         }
         reader.endArray();
         return xingAddressList;
-    }
-
-    private XingAddressMapper() {
-        throw new AssertionError("No instances.");
     }
 
     public static XingAddress parseXingAddress(com.squareup.moshi.JsonReader reader) throws IOException {

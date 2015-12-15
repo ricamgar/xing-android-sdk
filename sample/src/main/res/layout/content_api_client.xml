@@ -36,9 +36,9 @@
     tools:context="com.xing.android.sdk.sample.ApiClientActivity">
 
     <TextView
+        android:id="@+id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/username"
-        android:text="myname"/>
+        android:text="myname" />
 
 </RelativeLayout>

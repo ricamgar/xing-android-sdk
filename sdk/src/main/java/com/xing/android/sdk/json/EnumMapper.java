@@ -34,6 +34,10 @@ import com.xing.android.sdk.model.JsonEnum;
  * @author serj.lotutovici
  */
 public final class EnumMapper {
+    private EnumMapper() {
+        throw new AssertionError("No instances.");
+    }
+
     /**
      * Parse a {@link JsonEnum} from a string value received from server.
      *
@@ -56,9 +60,5 @@ public final class EnumMapper {
             }
             return null;
         }
-    }
-
-    private EnumMapper() {
-        throw new AssertionError("No instances.");
     }
 }

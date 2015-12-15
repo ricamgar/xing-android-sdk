@@ -38,7 +38,6 @@ import java.util.List;
  * @see <a href="https://dev.xing.com/docs/get/users/:id">User Profile</a>
  */
 public class EducationalBackground implements Serializable, Parcelable {
-    private static final long serialVersionUID = 2927900492592865436L;
     /** Creator object for the Parcelable contract. */
     public static final Creator<EducationalBackground> CREATOR = new Creator<EducationalBackground>() {
         @Override
@@ -51,7 +50,7 @@ public class EducationalBackground implements Serializable, Parcelable {
             return new EducationalBackground[size];
         }
     };
-
+    private static final long serialVersionUID = 2927900492592865436L;
     /** Educational degree. */
     @Json(name = "degree")
     private String degree;

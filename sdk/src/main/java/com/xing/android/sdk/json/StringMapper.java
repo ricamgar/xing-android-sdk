@@ -35,6 +35,10 @@ import java.util.List;
  * @author david.gonzalez
  */
 public final class StringMapper {
+    private StringMapper() {
+        throw new AssertionError("No instance.");
+    }
+
     public static List<String> parseStringList(JsonReader reader) throws IOException {
         List<String> stringList = new ArrayList<>(0);
         reader.beginArray();
@@ -43,10 +47,6 @@ public final class StringMapper {
         }
         reader.endArray();
         return stringList;
-    }
-
-    private StringMapper() {
-        throw new AssertionError("No instance.");
     }
 
     public static List<String> parseStringList(com.squareup.moshi.JsonReader reader) throws IOException {

@@ -40,6 +40,10 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public final class ProfileVisitMapper {
+    private ProfileVisitMapper() {
+        throw new AssertionError("No instances.");
+    }
+
     /**
      * Parse the Detail response and get the visits list so that the visits can be unwrapped by further parsing.
      *
@@ -207,9 +211,5 @@ public final class ProfileVisitMapper {
         }
         reader.endArray();
         return profileVisitList;
-    }
-
-    private ProfileVisitMapper() {
-        throw new AssertionError("No instances.");
     }
 }

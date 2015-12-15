@@ -24,6 +24,10 @@ import java.io.Closeable;
 import java.io.IOException;
 
 final class Utils {
+    private Utils() {
+        // No instances.
+    }
+
     /**
      * Check if the object instance is not null. This will method throws a NPE if case the condition is not met,
      * otherwise the same (non-altered) instance of the object will be returned.
@@ -86,9 +90,5 @@ final class Utils {
     /** Returns a {@link IOException} with a formatted message. */
     static IOException ioError(String message, Object... args) {
         return new IOException(String.format(message, args));
-    }
-
-    private Utils() {
-        // No instances.
     }
 }

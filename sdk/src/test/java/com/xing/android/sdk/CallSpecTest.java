@@ -61,6 +61,82 @@ public class CallSpecTest {
     public XingApi mockApi;
     public HttpUrl httpUrl;
 
+    private static void assertSuccessResponse(Response<TestMsg, Object> response, TestMsg expected) {
+        assertThat(response.code()).isEqualTo(200);
+        assertThat(response.errorBody()).isNull();
+        assertThat(response.message()).isEqualTo("OK");
+        assertThat(response.headers()).isNotNull();
+
+        TestMsg msg = response.body();
+        assertNotNull(msg);
+        assertThat(msg.msg).isEqualTo(expected.msg);
+        assertThat(msg.code).isEqualTo(expected.code);
+    }
+
+    private static void assertErrorResponse(Response<Object, TestMsg> response, TestMsg expected, int code) {
+        assertThat(response.isSuccess()).isFalse();
+        assertThat(response.code()).isEqualTo(code);
+        assertThat(response.body()).isNull();
+
+        TestMsg body = response.errorBody();
+        assertNotNull(body);
+        assertThat(body.msg).isEqualTo(expected.msg);
+        assertThat(body.code).isEqualTo(expected.code);
+    }
+
+    private static void assertRequestHasBody(Request request, TestMsg expected, int contentLength) throws IOException {
+        RequestBody body = request.body();
+        assertThat(body.contentLength()).isEqualTo(contentLength);
+        assertThat(body.contentType().subtype()).isEqualTo("json");
+
+        Buffer buffer = new Buffer();
+        body.writeTo(buffer);
+        assertThat(buffer.readUtf8())
+              .contains("\"msg\":\"" + expected.msg + '"')
+              .contains("\"code\":" + expected.code)
+              .startsWith("{")
+              .endsWith("}")
+              .hasSize(contentLength);
+    }
+
+    private static void assertNoBodySuccessResponse(Response response, int code) throws IOException {
+        assertThat(response.code()).isEqualTo(code);
+        assertThat(response.errorBody()).isNull();
+        assertThat(response.body()).isNull();
+        assertThat(response.isSuccess()).isTrue();
+
+        ResponseBody body = response.raw().body();
+        assertThat(body).isNotNull();
+        assertThat(body.contentLength()).isEqualTo(0L);
+        assertThat(body.contentType()).isNull();
+
+        try {
+            body.source();
+        } catch (IllegalStateException e) {
+            assertThat(e.getMessage()).isEqualTo("Cannot read raw response body of a parsed body.");
+        }
+    }
+
+    private static void assertNoBodySuccessResponseAsync(CallSpec spec, int code) throws Exception {
+        final AtomicReference<Response<Object, Object>> responseRef = new AtomicReference<>();
+        final CountDownLatch latch = new CountDownLatch(1);
+        //noinspection unchecked
+        spec.enqueue(new Callback<Object, Object>() {
+            @Override
+            public void onResponse(Response<Object, Object> response) {
+                responseRef.set(response);
+                latch.countDown();
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                fail("unexpected #onFailure() call");
+            }
+        });
+        latch.await(2, TimeUnit.SECONDS);
+        assertNoBodySuccessResponse(responseRef.get(), code);
+    }
+
     @Before
     public void setUp() throws Exception {
         httpUrl = server.url("/");
@@ -542,82 +618,6 @@ public class CallSpecTest {
         } catch (IOException e) {
             assertThat(e.getMessage()).isEqualTo("Broken body!");
         }
-    }
-
-    private static void assertSuccessResponse(Response<TestMsg, Object> response, TestMsg expected) {
-        assertThat(response.code()).isEqualTo(200);
-        assertThat(response.errorBody()).isNull();
-        assertThat(response.message()).isEqualTo("OK");
-        assertThat(response.headers()).isNotNull();
-
-        TestMsg msg = response.body();
-        assertNotNull(msg);
-        assertThat(msg.msg).isEqualTo(expected.msg);
-        assertThat(msg.code).isEqualTo(expected.code);
-    }
-
-    private static void assertErrorResponse(Response<Object, TestMsg> response, TestMsg expected, int code) {
-        assertThat(response.isSuccess()).isFalse();
-        assertThat(response.code()).isEqualTo(code);
-        assertThat(response.body()).isNull();
-
-        TestMsg body = response.errorBody();
-        assertNotNull(body);
-        assertThat(body.msg).isEqualTo(expected.msg);
-        assertThat(body.code).isEqualTo(expected.code);
-    }
-
-    private static void assertRequestHasBody(Request request, TestMsg expected, int contentLength) throws IOException {
-        RequestBody body = request.body();
-        assertThat(body.contentLength()).isEqualTo(contentLength);
-        assertThat(body.contentType().subtype()).isEqualTo("json");
-
-        Buffer buffer = new Buffer();
-        body.writeTo(buffer);
-        assertThat(buffer.readUtf8())
-              .contains("\"msg\":\"" + expected.msg + '"')
-              .contains("\"code\":" + expected.code)
-              .startsWith("{")
-              .endsWith("}")
-              .hasSize(contentLength);
-    }
-
-    private static void assertNoBodySuccessResponse(Response response, int code) throws IOException {
-        assertThat(response.code()).isEqualTo(code);
-        assertThat(response.errorBody()).isNull();
-        assertThat(response.body()).isNull();
-        assertThat(response.isSuccess()).isTrue();
-
-        ResponseBody body = response.raw().body();
-        assertThat(body).isNotNull();
-        assertThat(body.contentLength()).isEqualTo(0L);
-        assertThat(body.contentType()).isNull();
-
-        try {
-            body.source();
-        } catch (IllegalStateException e) {
-            assertThat(e.getMessage()).isEqualTo("Cannot read raw response body of a parsed body.");
-        }
-    }
-
-    private static void assertNoBodySuccessResponseAsync(CallSpec spec, int code) throws Exception {
-        final AtomicReference<Response<Object, Object>> responseRef = new AtomicReference<>();
-        final CountDownLatch latch = new CountDownLatch(1);
-        //noinspection unchecked
-        spec.enqueue(new Callback<Object, Object>() {
-            @Override
-            public void onResponse(Response<Object, Object> response) {
-                responseRef.set(response);
-                latch.countDown();
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                fail("unexpected #onFailure() call");
-            }
-        });
-        latch.await(2, TimeUnit.SECONDS);
-        assertNoBodySuccessResponse(responseRef.get(), code);
     }
 
     private <RT, ET> CallSpec.Builder<RT, ET> builder(HttpMethod httpMethod, String path, boolean formEncoded) {

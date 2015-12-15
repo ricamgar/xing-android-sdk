@@ -248,13 +248,11 @@ public final class CallSpec<RT, ET> {
      * TODO docs.
      */
     public static final class Builder<RT, ET> {
+        static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
         // Upper and lower characters, digits, underscores, and hyphens, starting with a character.
         private static final String PARAM = "[a-zA-Z][a-zA-Z0-9_-]*";
         private static final Pattern PARAM_NAME_REGEX = Pattern.compile(PARAM);
         private static final Pattern PARAM_URL_REGEX = Pattern.compile("\\{(" + PARAM + ")\\}");
-
-        static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
-
         private final XingApi api;
         private final HttpMethod httpMethod;
         private final HttpUrl apiEndpoint;
@@ -280,6 +278,20 @@ public final class CallSpec<RT, ET> {
             requestBuilder = new Request.Builder();
 
             if (isFormEncoded) formEncodingBuilder = new FormEncodingBuilder();
+        }
+
+        /**
+         * Gets the set of unique path parameters used in the given URI. If a parameter is used twice
+         * in the URI, it will only show up once in the set.
+         */
+        static Set<String> parseResourcePathParams(String resourcePath) {
+            Matcher matcher = PARAM_URL_REGEX.matcher(resourcePath);
+            //noinspection CollectionWithoutInitialCapacity
+            Set<String> patterns = new LinkedHashSet<>();
+            while (matcher.find()) {
+                patterns.add(matcher.group(1));
+            }
+            return patterns;
         }
 
         public Builder<RT, ET> pathParam(String name, String value) {
@@ -387,20 +399,6 @@ public final class CallSpec<RT, ET> {
             resourcePath = null;
         }
 
-        /**
-         * Gets the set of unique path parameters used in the given URI. If a parameter is used twice
-         * in the URI, it will only show up once in the set.
-         */
-        static Set<String> parseResourcePathParams(String resourcePath) {
-            Matcher matcher = PARAM_URL_REGEX.matcher(resourcePath);
-            //noinspection CollectionWithoutInitialCapacity
-            Set<String> patterns = new LinkedHashSet<>();
-            while (matcher.find()) {
-                patterns.add(matcher.group(1));
-            }
-            return patterns;
-        }
-
         private void validatePathParam(String name) {
             if (!PARAM_NAME_REGEX.matcher(name).matches()) {
                 throw assertionError("Path parameter name must match %s. Found: %s", PARAM_URL_REGEX.pattern(), name);
@@ -447,7 +445,9 @@ public final class CallSpec<RT, ET> {
             this.delegate = delegate;
         }
 
-        @Override
+        void throwIfCaught() throws IOException {
+            if (thrownException != null) throw thrownException;
+        }        @Override
         public MediaType contentType() {
             return delegate.contentType();
         }
@@ -489,8 +489,6 @@ public final class CallSpec<RT, ET> {
             delegate.close();
         }
 
-        void throwIfCaught() throws IOException {
-            if (thrownException != null) throw thrownException;
-        }
+
     }
 }

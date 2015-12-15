@@ -35,7 +35,6 @@ import java.io.Serializable;
  * @author serj.lotutovici
  */
 public class TimeZone implements Serializable, Parcelable {
-    private static final long serialVersionUID = -9131199441954044707L;
     /** Creator object for Parcelable contract. */
     public static final Creator<TimeZone> CREATOR = new Creator<TimeZone>() {
         @Override
@@ -48,7 +47,7 @@ public class TimeZone implements Serializable, Parcelable {
             return new TimeZone[size];
         }
     };
-
+    private static final long serialVersionUID = -9131199441954044707L;
     /** Name of timezone. */
     @Json(name = "name")
     private String name;

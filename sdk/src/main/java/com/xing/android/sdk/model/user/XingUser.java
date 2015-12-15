@@ -53,8 +53,6 @@ import java.util.regex.Pattern;
  */
 @SuppressWarnings("unused") // Public api
 public class XingUser implements Serializable, Parcelable {
-    private static final long serialVersionUID = 3037193617271688856L;
-    private static final Pattern COMMA_SEPARATOR = Pattern.compile(", ");
     public static final Creator<XingUser> CREATOR = new Creator<XingUser>() {
         @Override
         public XingUser createFromParcel(Parcel source) {
@@ -66,7 +64,8 @@ public class XingUser implements Serializable, Parcelable {
             return new XingUser[size];
         }
     };
-
+    private static final long serialVersionUID = 3037193617271688856L;
+    private static final Pattern COMMA_SEPARATOR = Pattern.compile(", ");
     @Json(name = "id")
     private String id;
     @Json(name = "first_name")
@@ -352,12 +351,12 @@ public class XingUser implements Serializable, Parcelable {
         return gender;
     }
 
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
-
     public void setGender(String gender) {
         this.gender = EnumMapper.parseEnumFromString(Gender.values(), gender);
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 
     public String getPageName() {
@@ -384,12 +383,12 @@ public class XingUser implements Serializable, Parcelable {
         return employmentStatus;
     }
 
-    public void setEmploymentStatus(EmploymentStatus employmentStatus) {
-        this.employmentStatus = employmentStatus;
-    }
-
     public void setEmploymentStatus(String employmentStatus) {
         this.employmentStatus = EmploymentStatus.valueOf(employmentStatus);
+    }
+
+    public void setEmploymentStatus(EmploymentStatus employmentStatus) {
+        this.employmentStatus = employmentStatus;
     }
 
     public XingCalendar getBirthday() {

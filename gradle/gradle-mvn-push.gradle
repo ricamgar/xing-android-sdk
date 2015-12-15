@@ -85,7 +85,7 @@ afterEvaluate { project ->
     }
 
     if (project.getPlugins().hasPlugin('com.android.application')
-            || project.getPlugins().hasPlugin('com.android.library')) {
+          || project.getPlugins().hasPlugin('com.android.library')) {
 
         uploadArchives.dependsOn(build)
 
@@ -202,7 +202,7 @@ afterEvaluate { project ->
 
     artifacts {
         if (project.getPlugins().hasPlugin('com.android.application')
-                || project.getPlugins().hasPlugin('com.android.library')) {
+              || project.getPlugins().hasPlugin('com.android.library')) {
             archives androidSourcesJar
             archives androidJavadocsJar
         } else {

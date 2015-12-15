@@ -38,9 +38,6 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public class Industry implements Serializable, Parcelable {
-    private static final long serialVersionUID = 6164637739744149347L;
-    private static final float FIRST_CATEGORY_CONVERSION = 10000f;
-
     /* Creator object for the Parcelable contract. */
     public static final Creator<Industry> CREATOR = new Creator<Industry>() {
         @Override
@@ -53,20 +50,11 @@ public class Industry implements Serializable, Parcelable {
             return new Industry[size];
         }
     };
-
-
+    private static final long serialVersionUID = 6164637739744149347L;
+    private static final float FIRST_CATEGORY_CONVERSION = 10000f;
     private final int id;
     private List<Segment> segments;
     private String typeName;
-
-    public static Industry newInstanceFromCompoundId(int compoundId) {
-        Segment segment = new Segment(compoundId, "");
-        return new Industry(extractFirstCategoryIndex(compoundId), "", Collections.singletonList(segment));
-    }
-
-    private static int extractFirstCategoryIndex(int encodedId) {
-        return (int) (Math.floor(encodedId / FIRST_CATEGORY_CONVERSION) * FIRST_CATEGORY_CONVERSION);
-    }
 
     public Industry(Parcel source) {
         id = source.readInt();
@@ -84,6 +72,15 @@ public class Industry implements Serializable, Parcelable {
         this.segments = segments;
     }
 
+    public static Industry newInstanceFromCompoundId(int compoundId) {
+        Segment segment = new Segment(compoundId, "");
+        return new Industry(extractFirstCategoryIndex(compoundId), "", Collections.singletonList(segment));
+    }
+
+    private static int extractFirstCategoryIndex(int encodedId) {
+        return (int) (Math.floor(encodedId / FIRST_CATEGORY_CONVERSION) * FIRST_CATEGORY_CONVERSION);
+    }
+
     public int getId() {
         return id;
     }
@@ -96,24 +93,17 @@ public class Industry implements Serializable, Parcelable {
         this.typeName = typeName;
     }
 
-    @Override
-    public String toString() {
-        return typeName;
-    }
-
     @Nullable
     public List<Segment> getSegments() {
         return segments;
+    }    @Override
+    public String toString() {
+        return typeName;
     }
 
     @Override
     public boolean equals(Object object) {
         return object instanceof Industry && id == ((Industry) object).id;
-    }
-
-    @Override
-    public int hashCode() {
-        return typeName.hashCode();
     }
 
     @Override
@@ -126,6 +116,9 @@ public class Industry implements Serializable, Parcelable {
         dest.writeInt(id);
         dest.writeString(typeName);
         dest.writeList(segments);
+    }    @Override
+    public int hashCode() {
+        return typeName.hashCode();
     }
 
     /**
@@ -171,4 +164,8 @@ public class Industry implements Serializable, Parcelable {
             return typeName;
         }
     }
+
+
+
+
 }

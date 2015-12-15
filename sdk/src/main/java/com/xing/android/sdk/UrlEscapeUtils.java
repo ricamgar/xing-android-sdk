@@ -61,6 +61,10 @@ final class UrlEscapeUtils {
     private static final boolean[] SAFE_OCTETS =
           createSafeOctets(SAFE_CHARS + "abcdefghijklmnopqrstuvwxyz" + "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789");
 
+    private UrlEscapeUtils() {
+        // No instances.
+    }
+
     /**
      * Returns the escaped form of a given literal string.
      *
@@ -349,9 +353,5 @@ final class UrlEscapeUtils {
             System.arraycopy(dest, 0, copy, 0, index);
         }
         return copy;
-    }
-
-    private UrlEscapeUtils() {
-        // No instances.
     }
 }

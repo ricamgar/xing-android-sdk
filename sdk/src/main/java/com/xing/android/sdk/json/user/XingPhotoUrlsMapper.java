@@ -39,6 +39,10 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public final class XingPhotoUrlsMapper {
+    private XingPhotoUrlsMapper() {
+        throw new AssertionError("No instances.");
+    }
+
     /**
      * Extracts the TimeZone out of the JsonReader.
      *
@@ -188,10 +192,6 @@ public final class XingPhotoUrlsMapper {
         }
         reader.endArray();
         return xingPhotoUrlsList;
-    }
-
-    private XingPhotoUrlsMapper() {
-        throw new AssertionError("No instances.");
     }
 
     public static List<XingPhotoUrls> parseXingPhotoUrlsList(com.squareup.moshi.JsonReader reader) throws IOException {

@@ -41,11 +41,6 @@ import java.security.InvalidParameterException;
  */
 @SuppressWarnings("unused") // Public api
 public class ExperienceCompany implements Serializable, Parcelable {
-    private static final long serialVersionUID = -3976504576025888701L;
-    private static final int DESCRIPTION_LIMIT = 512;
-    private static final int NAME_LIMIT = 80;
-    private static final int TITLE_LIMIT = 80;
-    private static final int URL_LIMIT = 128;
     /** Creator object for the Parcelable contract. */
     public static final Creator<ExperienceCompany> CREATOR = new Creator<ExperienceCompany>() {
         @Override
@@ -58,7 +53,11 @@ public class ExperienceCompany implements Serializable, Parcelable {
             return new ExperienceCompany[size];
         }
     };
-
+    private static final long serialVersionUID = -3976504576025888701L;
+    private static final int DESCRIPTION_LIMIT = 512;
+    private static final int NAME_LIMIT = 80;
+    private static final int TITLE_LIMIT = 80;
+    private static final int URL_LIMIT = 128;
     /** Company id. */
     @Json(name = "id")
     private String id;
@@ -242,8 +241,8 @@ public class ExperienceCompany implements Serializable, Parcelable {
      *
      * @param careerLevel career level.
      */
-    public void setCareerLevel(CareerLevel careerLevel) {
-        this.careerLevel = careerLevel;
+    public void setCareerLevel(String careerLevel) {
+        this.careerLevel = EnumMapper.parseEnumFromString(CareerLevel.values(), careerLevel);
     }
 
     /**
@@ -251,8 +250,8 @@ public class ExperienceCompany implements Serializable, Parcelable {
      *
      * @param careerLevel career level.
      */
-    public void setCareerLevel(String careerLevel) {
-        this.careerLevel = EnumMapper.parseEnumFromString(CareerLevel.values(), careerLevel);
+    public void setCareerLevel(CareerLevel careerLevel) {
+        this.careerLevel = careerLevel;
     }
 
     /**
@@ -269,8 +268,8 @@ public class ExperienceCompany implements Serializable, Parcelable {
      *
      * @param companySize company size.
      */
-    public void setCompanySize(CompanySize companySize) {
-        this.companySize = companySize;
+    public void setCompanySize(String companySize) {
+        this.companySize = EnumMapper.parseEnumFromString(CompanySize.values(), companySize);
     }
 
     /**
@@ -278,8 +277,8 @@ public class ExperienceCompany implements Serializable, Parcelable {
      *
      * @param companySize company size.
      */
-    public void setCompanySize(String companySize) {
-        this.companySize = EnumMapper.parseEnumFromString(CompanySize.values(), companySize);
+    public void setCompanySize(CompanySize companySize) {
+        this.companySize = companySize;
     }
 
     public String getDescription() {
@@ -333,8 +332,8 @@ public class ExperienceCompany implements Serializable, Parcelable {
      *
      * @param formOfEmployment form of employment.
      */
-    public void setFormOfEmployment(FormOfEmployment formOfEmployment) {
-        this.formOfEmployment = formOfEmployment;
+    public void setFormOfEmployment(String formOfEmployment) {
+        this.formOfEmployment = EnumMapper.parseEnumFromString(FormOfEmployment.values(), formOfEmployment);
     }
 
     /**
@@ -342,8 +341,8 @@ public class ExperienceCompany implements Serializable, Parcelable {
      *
      * @param formOfEmployment form of employment.
      */
-    public void setFormOfEmployment(String formOfEmployment) {
-        this.formOfEmployment = EnumMapper.parseEnumFromString(FormOfEmployment.values(), formOfEmployment);
+    public void setFormOfEmployment(FormOfEmployment formOfEmployment) {
+        this.formOfEmployment = formOfEmployment;
     }
 
     /**

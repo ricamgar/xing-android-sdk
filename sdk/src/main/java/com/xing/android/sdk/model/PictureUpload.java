@@ -52,6 +52,12 @@ import java.util.Arrays;
 public final class PictureUpload {
     private static final String MIME_TYPE_JPEG = "image/jpeg";
     private static final String MIME_TYPE_PNG = "image/png";
+    @Json(name = "photo")
+    private final Photo photo;
+
+    private PictureUpload(Photo photo) {
+        this.photo = photo;
+    }
 
     /**
      * This is a static "Constructor" method that creates the PictureUpload object with the mimetype already set to
@@ -67,13 +73,6 @@ public final class PictureUpload {
      */
     public static PictureUpload pictureUploadPNG(String fileName, byte[] content) {
         return new PictureUpload(new Photo(fileName, MIME_TYPE_PNG, content));
-    }
-
-    @Json(name = "photo")
-    private final Photo photo;
-
-    private PictureUpload(Photo photo) {
-        this.photo = photo;
     }
 
     @Override

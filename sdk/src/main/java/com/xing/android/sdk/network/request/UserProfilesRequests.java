@@ -72,6 +72,10 @@ public final class UserProfilesRequests {
     /** Me value. */
     private static final String ME_VALUE = "me";
 
+    private UserProfilesRequests() {
+        throw new AssertionError("No instances.");
+    }
+
     /**
      * Request the user details for the provided id. If no id is provided the "/v1/users/me"
      * will be called see {@link UserProfilesRequests#detailsMe(List)}.
@@ -400,9 +404,5 @@ public final class UserProfilesRequests {
         }
 
         return new Request.Builder(Request.Method.GET).setUri(Uri.parse(uri)).build();
-    }
-
-    private UserProfilesRequests() {
-        throw new AssertionError("No instances.");
     }
 }

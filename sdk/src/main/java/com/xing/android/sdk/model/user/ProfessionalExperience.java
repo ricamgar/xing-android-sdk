@@ -38,7 +38,6 @@ import java.util.List;
  * @see <a href="https://dev.xing.com/docs/get/users/me">Professional Experience</a>
  */
 public class ProfessionalExperience implements Serializable, Parcelable {
-    private static final long serialVersionUID = 5863766233252368533L;
     /** Creator object for Parcelable contract. */
     public static final Creator<ProfessionalExperience> CREATOR = new Creator<ProfessionalExperience>() {
         @Override
@@ -51,7 +50,7 @@ public class ProfessionalExperience implements Serializable, Parcelable {
             return new ProfessionalExperience[size];
         }
     };
-
+    private static final long serialVersionUID = 5863766233252368533L;
     /** Primary company. */
     @Json(name = "primary_company")
     private ExperienceCompany primaryCompany;

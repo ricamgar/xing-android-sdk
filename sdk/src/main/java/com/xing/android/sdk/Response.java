@@ -27,6 +27,15 @@ import static com.google.gdata.util.common.base.Preconditions.checkNotNull;
  * TODO docs.
  */
 public final class Response<RT, ET> {
+    private final com.squareup.okhttp.Response rawResponse;
+    private final RT body;
+    private final ET errorBody;
+    private Response(com.squareup.okhttp.Response rawResponse, @Nullable RT body, @Nullable ET errorBody) {
+        this.rawResponse = checkNotNull(rawResponse, "rawResponse == null");
+        this.body = body;
+        this.errorBody = errorBody;
+    }
+
     /** Returns a successful {@link Response} with a {@code null} error body. */
     static <RT, ET> Response<RT, ET> success(@Nullable RT body, com.squareup.okhttp.Response rawResponse) {
         return new Response<>(rawResponse, body, null);
@@ -35,16 +44,6 @@ public final class Response<RT, ET> {
     /** Returns a error {@link Response} with a {@code null} response body. */
     static <RT, ET> Response<RT, ET> error(@Nullable ET errorBody, com.squareup.okhttp.Response rawResponse) {
         return new Response<>(rawResponse, null, errorBody);
-    }
-
-    private final com.squareup.okhttp.Response rawResponse;
-    private final RT body;
-    private final ET errorBody;
-
-    private Response(com.squareup.okhttp.Response rawResponse, @Nullable RT body, @Nullable ET errorBody) {
-        this.rawResponse = checkNotNull(rawResponse, "rawResponse == null");
-        this.body = body;
-        this.errorBody = errorBody;
     }
 
     /** The raw response from the HTTP client. */
