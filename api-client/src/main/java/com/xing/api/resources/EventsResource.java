@@ -15,15 +15,32 @@
  */
 package com.xing.api.resources;
 
+import com.xing.api.CallSpec;
+import com.xing.api.HttpError;
 import com.xing.api.Resource;
 import com.xing.api.XingApi;
+import com.xing.api.data.events.Event;
+import com.xing.api.internal.Experimental;
 
 /**
  * @author daniel.hartwich
  */
 public class EventsResource extends Resource {
     /** Creates a resource instance. This should be the only constructor declared by child classes. */
-    protected EventsResource(XingApi api) {
+    EventsResource(XingApi api) {
         super(api);
     }
+
+    /**
+     * Event Details
+     */
+    @Experimental
+    public CallSpec<Event, HttpError> getEventById(String eventId) {
+        return Resource.<Event, HttpError>newGetSpec(api, "v1/events/{id}")
+              .pathParam("id", eventId)
+              .responseAs(single(Event.class, "event"))
+              .build();
+    }
+
+
 }
